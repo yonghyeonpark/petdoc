@@ -25,7 +25,6 @@ public enum Province {
     private final String name;
 
     public static Province fromName(String name) {
-        System.out.println(name);
         for (Province province : Province.values()) {
             if (province.name.equals(name)) {
                 return province;
