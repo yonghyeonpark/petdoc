@@ -64,6 +64,7 @@ public class BatchConfig {
         return new ExcelReader(filePath);
     }
 
+    // 비동기 작업 처리를 위한 AsyncItem 활용
     @Bean
     public AsyncItemProcessor<Row, VetFacility> asyncProcessor() {
         AsyncItemProcessor<Row, VetFacility> asyncItemProcessor = new AsyncItemProcessor<>();
