@@ -1,22 +1,17 @@
 package yong.petdoc.service.kakao.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
-import org.locationtech.jts.geom.Point;
 
 import java.util.List;
 
 @Getter
+@AllArgsConstructor
 public class KakaoAddressResponse {
 
     private final List<Document> documents;
-
-    @JsonCreator
-    public KakaoAddressResponse(List<Document> documents) {
-        this.documents = documents;
-    }
+    private final Meta meta;
 
     @Getter
     public static class Document {
@@ -40,8 +35,11 @@ public class KakaoAddressResponse {
 
         @JsonProperty("y")
         private double latitude;
+    }
 
-        @Setter
-        private Point location;
+    @Getter
+    public static class Meta {
+        @JsonProperty("is_end")
+        private boolean isEnd;
     }
 }
