@@ -4,11 +4,17 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.springframework.batch.item.*;
+import org.springframework.batch.item.ExecutionContext;
+import org.springframework.batch.item.ItemStreamException;
+import org.springframework.batch.item.ItemStreamReader;
+import yong.petdoc.exception.CustomException;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+
+import static yong.petdoc.exception.ErrorCode.*;
 
 public class ExcelReader implements ItemStreamReader<Row> {
 
@@ -29,13 +35,15 @@ public class ExcelReader implements ItemStreamReader<Row> {
             inputStream = new FileInputStream(filePath);
             workbook = WorkbookFactory.create(inputStream);
             sheet = workbook.getSheetAt(0);
+        } catch (FileNotFoundException e) {
+            throw new CustomException(FILE_NOT_FOUND);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new CustomException(FILE_OPEN_FAILED);
         }
     }
 
     @Override
-    public Row read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
+    public Row read() {
         if (currentRowIndex > sheet.getLastRowNum()) {
             return null;
         }
@@ -52,7 +60,7 @@ public class ExcelReader implements ItemStreamReader<Row> {
                 inputStream.close();
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new CustomException(FILE_CLOSE_FAILED);
         }
     }
 }
