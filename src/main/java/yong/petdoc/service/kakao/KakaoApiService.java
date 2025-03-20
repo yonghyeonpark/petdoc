@@ -43,31 +43,30 @@ public class KakaoApiService {
                 });
     }
 
-    public Mono<KakaoAddressResponse.Document> getPlaceDetails(String vetFacilityName, Point point) {
+    public Mono<KakaoAddressResponse> getAddressResponse(String vetFacilityName, Point point, int page) {
         return kakaoWebClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/keyword")
                         .queryParam("query", vetFacilityName)
+                        .queryParam("page", page)
                         .queryParam("x", String.valueOf(point.getX()))
                         .queryParam("y", String.valueOf(point.getY()))
                         .queryParam("radius", 300)
                         .build()
                 )
                 .retrieve()
-                .bodyToMono(KakaoAddressResponse.class)
-                .flatMap(response -> {
-                    List<KakaoAddressResponse.Document> documents = response.getDocuments();
-                    if (documents.isEmpty()) {
-                        return Mono.empty();
-                    }
-                    KakaoAddressResponse.Document document = documents.get(0);
-                    document.setLocation(geometryFactory.createPoint(
-                            new Coordinate(
-                                    document.getLongitude(),
-                                    document.getLatitude()
-                            )
-                    ));
-                    return Mono.just(document);
-                });
+                .bodyToMono(KakaoAddressResponse.class);
+    }
+
+    public Mono<KakaoAddressResponse> getAddressResponse(String vetFacilityName, int page) {
+        return kakaoWebClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/keyword")
+                        .queryParam("query", vetFacilityName)
+                        .queryParam("page", page)
+                        .build()
+                )
+                .retrieve()
+                .bodyToMono(KakaoAddressResponse.class);
     }
 }
