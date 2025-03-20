@@ -1,6 +1,9 @@
 package yong.petdoc.domain.vetfacility;
 
 import lombok.AllArgsConstructor;
+import yong.petdoc.exception.CustomException;
+
+import static yong.petdoc.exception.ErrorCode.INVALID_PROVINCE;
 
 @AllArgsConstructor
 public enum Province {
@@ -30,6 +33,6 @@ public enum Province {
                 return province;
             }
         }
-        throw new RuntimeException();
+        throw new CustomException(INVALID_PROVINCE);
     }
 }

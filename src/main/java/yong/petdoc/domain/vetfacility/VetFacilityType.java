@@ -1,6 +1,9 @@
 package yong.petdoc.domain.vetfacility;
 
 import lombok.AllArgsConstructor;
+import yong.petdoc.exception.CustomException;
+
+import static yong.petdoc.exception.ErrorCode.INVALID_VET_FACILITY_TYPE;
 
 @AllArgsConstructor
 public enum VetFacilityType {
@@ -15,6 +18,6 @@ public enum VetFacilityType {
                 return vetFacilityType;
             }
         }
-        throw new RuntimeException();
+        throw new CustomException(INVALID_VET_FACILITY_TYPE);
     }
 }
