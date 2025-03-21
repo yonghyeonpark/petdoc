@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
 
     // VetFacility 관련
+    FACILITY_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 시설입니다."),
     INVALID_VET_FACILITY_TYPE(HttpStatus.BAD_REQUEST, "잘못된 동물 시설 타입입니다."),
     INVALID_PROVINCE(HttpStatus.BAD_REQUEST, "잘못된 지역명입니다."),
 
