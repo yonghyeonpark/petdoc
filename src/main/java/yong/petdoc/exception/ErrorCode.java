@@ -9,9 +9,15 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
 
     // VetFacility 관련
-    FACILITY_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 시설입니다."),
+    VET_FACILITY_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 시설입니다."),
     INVALID_VET_FACILITY_TYPE(HttpStatus.BAD_REQUEST, "잘못된 동물 시설 타입입니다."),
     INVALID_PROVINCE(HttpStatus.BAD_REQUEST, "잘못된 지역명입니다."),
+
+    // User 관련
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 사용자입니다."),
+
+    // Bookmark 관련
+    BOOKMARK_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 즐겨찾기입니다."),
 
     // 파일 관련
     FILE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다."),
