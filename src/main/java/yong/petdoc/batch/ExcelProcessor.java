@@ -37,6 +37,7 @@ public class ExcelProcessor implements ItemProcessor<Row, VetFacility> {
         Province province = Province.fromName(address.split(" ")[0]);
 
         Point location = kakaoApiService.getCoordinateByAddress(address)
+                .retryWhen(Retry.fixedDelay(3, Duration.ofMillis(500)))
                 .block();
 
         // '키워드로 장소 검색' 카카오 API 요청에 대한 응답 페이지 조건에 따른 반복 설정
