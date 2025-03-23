@@ -7,12 +7,13 @@ import yong.petdoc.domain.user.UserRepository;
 import yong.petdoc.web.user.dto.request.CreateUserRequest;
 
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
 
+    @Transactional
     public Long createUser(CreateUserRequest request) {
         return userRepository.save(request.toEntity())
                 .getId();
