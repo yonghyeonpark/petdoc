@@ -9,10 +9,11 @@ public record VetFacilityResponse(
         String roadAddress,
         String phoneNumber,
         String placeUrl,
-        double grade
+        double grade,
+        long bookmarkCount
 ) {
 
-    public static VetFacilityResponse from(VetFacility vetFacility) {
+    public static VetFacilityResponse from(VetFacility vetFacility, long bookmarkCount) {
         return new VetFacilityResponse(
                 vetFacility.getId(),
                 vetFacility.getName(),
@@ -20,7 +21,8 @@ public record VetFacilityResponse(
                 vetFacility.getRoadAddress(),
                 vetFacility.getPhoneNumber(),
                 vetFacility.getPlaceUrl(),
-                vetFacility.getGrade()
+                vetFacility.getGrade(),
+                bookmarkCount
         );
     }
 }

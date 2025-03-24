@@ -29,6 +29,7 @@ public class VetFacility extends BaseTimeEntity {
     private String phoneNumber;
     private String placeUrl;
     private double grade;
+    private long bookmarkCount;
     private Boolean isDeleted;
 
     public VetFacility(
@@ -50,6 +51,7 @@ public class VetFacility extends BaseTimeEntity {
         this.phoneNumber = phoneNumber;
         this.placeUrl = placeUrl;
         this.grade = 0.0;
+        this.bookmarkCount = 0;
         this.isDeleted = false;
     }
 }
