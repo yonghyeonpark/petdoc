@@ -18,6 +18,7 @@ public enum ErrorCode {
 
     // Bookmark 관련
     BOOKMARK_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 즐겨찾기입니다."),
+    DUPLICATE_BOOKMARK(HttpStatus.CONFLICT, "해당 가게는 이미 즐겨찾기한 상태입니다."),
 
     // 파일 관련
     FILE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다."),
