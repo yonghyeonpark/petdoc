@@ -14,6 +14,7 @@ import yong.petdoc.exception.ErrorCode;
 import yong.petdoc.service.redis.RedisService;
 import yong.petdoc.web.bookmark.dto.request.CreateBookmarkRequest;
 
+import static yong.petdoc.constant.redis.RedisKeyPrefix.VET_FACILITY_BOOKMARK;
 import static yong.petdoc.exception.ErrorCode.DUPLICATE_BOOKMARK;
 
 @RequiredArgsConstructor
@@ -30,7 +31,7 @@ public class BookmarkService {
     public Long createBookmark(CreateBookmarkRequest request) {
         Long userId = request.userId();
         Long vetFacilityId = request.vetFacilityId();
-        String key = String.valueOf(vetFacilityId);
+        String key = VET_FACILITY_BOOKMARK + vetFacilityId;
         String value = String.valueOf(userId);
 
         // Redis에서 vetFacilityId(key)에 해당하는 userId(value)가 존재하는지 확인
