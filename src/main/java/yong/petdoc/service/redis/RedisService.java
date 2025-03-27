@@ -15,8 +15,8 @@ public class RedisService {
         this.setOps = stringRedisTemplate.opsForSet();
     }
 
-    public void addToSet(String key, String value) {
-        setOps.add(key, value);
+    public Long addToSet(String key, String value) {
+        return setOps.add(key, value);
     }
 
     public void removeFromSet(String key, String value) {
@@ -25,11 +25,5 @@ public class RedisService {
 
     public Long getSizeOfSet(String key) {
         return setOps.size(key);
-    }
-
-    public boolean isMember(String key, String value) {
-        return Boolean.TRUE.equals(
-                setOps.isMember(key, value)
-        );
     }
 }
