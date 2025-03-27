@@ -19,8 +19,8 @@ public class RedisService {
         return setOps.add(key, value);
     }
 
-    public void removeFromSet(String key, String value) {
-        setOps.remove(key, value);
+    public Long removeFromSet(String key, String value) {
+        return setOps.remove(key, value);
     }
 
     public Long getSizeOfSet(String key) {
