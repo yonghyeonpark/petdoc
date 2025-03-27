@@ -1,5 +1,6 @@
 package yong.petdoc.service;
 
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import yong.petdoc.constant.redis.RedisKeyPrefix;
 import yong.petdoc.domain.bookmark.Bookmark;
@@ -16,6 +18,11 @@ import yong.petdoc.domain.bookmark.BookmarkRepository;
 import yong.petdoc.exception.CustomException;
 import yong.petdoc.service.bookmark.BookmarkService;
 import yong.petdoc.web.bookmark.dto.request.CreateBookmarkRequest;
+
+import java.time.Duration;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -40,6 +47,11 @@ public class BookmarkServiceTest {
         try (RedisConnection connection = stringRedisTemplate.getConnectionFactory().getConnection()) {
             connection.serverCommands().flushDb();
         }
+    }
+
+    @AfterEach
+    void tearDown() {
+        bookmarkRepository.deleteAllInBatch();
     }
 
     @DisplayName("즐겨찾기 생성 시 Redis에는 수의 시설에 대한 사용자 ID가, RDB에는 엔티티가 저장된다.")
@@ -81,5 +93,75 @@ public class BookmarkServiceTest {
         assertThatThrownBy(() -> bookmarkService.createBookmark(request))
                 .isInstanceOf(CustomException.class)
                 .hasMessage(DUPLICATE_BOOKMARK.getMessage());
+    }
+
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    @DisplayName("여러 유저가 동시에 즐겨찾기를 요청해도 중복 없이 모두 정상 저장된다.")
+    @Test
+    void createBookmark_concurrentWithMultipleUsers() throws InterruptedException {
+        //given // when
+        Long vetFacilityId = 1L;
+        int threadCount = 30;
+        String key = RedisKeyPrefix.VET_FACILITY_BOOKMARK + vetFacilityId;
+        SetOperations<String, String> ops = stringRedisTemplate.opsForSet();
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+        CountDownLatch latch = new CountDownLatch(threadCount);
+
+        for (int i = 1; i <= threadCount + 30; i++) {
+            Long userId = (long) i;
+            executorService.submit(() -> {
+                try {
+                    CreateBookmarkRequest request = new CreateBookmarkRequest(userId, vetFacilityId);
+                    bookmarkService.createBookmark(request);
+                } catch (Exception ignored) {
+                } finally {
+                    latch.countDown();
+                }
+            });
+        }
+        latch.await();
+
+        // then
+        Awaitility.await()
+                .atMost(Duration.ofSeconds(1))
+                .untilAsserted(() -> {
+                    assertThat(ops.size(key)).isEqualTo(30);
+                    assertThat(bookmarkRepository.findAll().size()).isEqualTo(30);
+                });
+    }
+
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    @DisplayName("동일한 유저가 동시에 즐겨찾기를 여러 번 요청해도 중복 저장되지 않는다.")
+    @Test
+    void createBookmark_concurrentWithSameUser() throws InterruptedException {
+        //given // when
+        Long userId = 1L;
+        Long vetFacilityId = 1L;
+        int threadCount = 30;
+        String key = RedisKeyPrefix.VET_FACILITY_BOOKMARK + vetFacilityId;
+        SetOperations<String, String> ops = stringRedisTemplate.opsForSet();
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+        CountDownLatch latch = new CountDownLatch(threadCount);
+
+        for (int i = 1; i <= threadCount; i++) {
+            executorService.submit(() -> {
+                try {
+                    CreateBookmarkRequest request = new CreateBookmarkRequest(userId, vetFacilityId);
+                    bookmarkService.createBookmark(request);
+                } catch (Exception ignored) {
+                } finally {
+                    latch.countDown();
+                }
+            });
+        }
+        latch.await();
+
+        // then
+        Awaitility.await()
+                .atMost(Duration.ofSeconds(1))
+                .untilAsserted(() -> {
+                    assertThat(ops.size(key)).isEqualTo(1);
+                    assertThat(bookmarkRepository.findAll().size()).isEqualTo(1);
+                });
     }
 }
