@@ -35,11 +35,12 @@ public class BookmarkService {
         String value = String.valueOf(userId);
 
         // Redis에서 vetFacilityId(key)에 해당하는 userId(value)가 존재하는지 확인
-        if (redisService.isMember(key, value)) {
+        Long added = redisService.addToSet(key, value);
+        if (added == null || added == 0) {
             throw new CustomException(DUPLICATE_BOOKMARK);
         }
-        redisService.addToSet(key, value);
 
+        // Redis는 따로 롤백되지 않으므로 직접 처리
         try {
             User user = userRepository.findById(userId)
                     .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
