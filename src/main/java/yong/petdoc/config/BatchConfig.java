@@ -92,9 +92,9 @@ public class BatchConfig {
     public JdbcBatchItemWriter<VetFacility> writer() {
         String sql = """
                 INSERT INTO vet_facility
-                (vet_facility_type, province, name, location, lot_address, road_address, phone_number, place_url, grade, is_deleted, created_at, last_modified_at)
+                (vet_facility_type, province, name, location, lot_address, road_address, phone_number, place_url, grade, bookmark_count, is_deleted, created_at, last_modified_at)
                 VALUES
-                (?, ?, ?, ST_GeomFromText(?), ?, ?, ?, ?, ?, ?, ?, ?)
+                (?, ?, ?, ST_GeomFromText(?), ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """;
         return new JdbcBatchItemWriterBuilder<VetFacility>()
                 .dataSource(dataSource)
@@ -109,11 +109,12 @@ public class BatchConfig {
                     ps.setString(7, item.getPhoneNumber());
                     ps.setString(8, item.getPlaceUrl());
                     ps.setDouble(9, item.getGrade());
-                    ps.setBoolean(10, item.getIsDeleted());
+                    ps.setLong(10, item.getBookmarkCount());
+                    ps.setBoolean(11, item.getIsDeleted());
 
                     LocalDateTime now = LocalDateTime.now();
-                    ps.setObject(11, now);
                     ps.setObject(12, now);
+                    ps.setObject(13, now);
                 })
                 .build();
     }
