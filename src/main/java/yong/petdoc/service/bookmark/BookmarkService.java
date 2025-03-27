@@ -13,8 +13,10 @@ import yong.petdoc.exception.CustomException;
 import yong.petdoc.exception.ErrorCode;
 import yong.petdoc.service.redis.RedisService;
 import yong.petdoc.web.bookmark.dto.request.CreateBookmarkRequest;
+import yong.petdoc.web.bookmark.dto.request.DeleteBookmarkRequest;
 
 import static yong.petdoc.constant.redis.RedisKeyPrefix.VET_FACILITY_BOOKMARK;
+import static yong.petdoc.exception.ErrorCode.BOOKMARK_NOT_FOUND;
 import static yong.petdoc.exception.ErrorCode.DUPLICATE_BOOKMARK;
 
 @RequiredArgsConstructor
@@ -51,6 +53,28 @@ public class BookmarkService {
                     .getId();
         } catch (RuntimeException e) {
             redisService.removeFromSet(key, value);
+            throw e;
+        }
+    }
+
+    @Transactional
+    public void deleteBookmark(DeleteBookmarkRequest request) {
+        Long userId = request.userId();
+        Long vetFacilityId = request.vetFacilityId();
+        String key = VET_FACILITY_BOOKMARK + vetFacilityId;
+        String value = String.valueOf(userId);
+
+        // Redis에서 삭제 대상이 존재하는지 확인
+        Long removed = redisService.removeFromSet(key, value);
+        if (removed == null || removed == 0) {
+            throw new CustomException(BOOKMARK_NOT_FOUND);
+        }
+
+        // Redis는 따로 롤백되지 않으므로 직접 처리
+        try {
+            bookmarkRepository.deleteByUserIdAndVetFacilityId(userId, vetFacilityId);
+        } catch (RuntimeException e) {
+            redisService.addToSet(key, value);
             throw e;
         }
     }
