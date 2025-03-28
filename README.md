@@ -1,6 +1,7 @@
 <div align="center">
+<img src="https://github.com/user-attachments/assets/63116827-da6e-4c6a-908c-8e0eacf49957" width="250">
 
-# 🩺 PetDoc 🐶😺
+# PetDoc
 
 <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white">
 <img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">
