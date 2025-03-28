@@ -15,8 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import yong.petdoc.constant.redis.RedisKeyPrefix;
 import yong.petdoc.domain.bookmark.Bookmark;
 import yong.petdoc.domain.bookmark.BookmarkRepository;
-import yong.petdoc.domain.user.UserRepository;
-import yong.petdoc.domain.vetfacility.VetFacilityRepository;
 import yong.petdoc.exception.CustomException;
 import yong.petdoc.service.bookmark.BookmarkService;
 import yong.petdoc.web.bookmark.dto.request.CreateBookmarkRequest;
@@ -45,12 +43,6 @@ public class BookmarkServiceTest {
 
     @Autowired
     private RedisTemplate<String, String> stringRedisTemplate;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private VetFacilityRepository vetFacilityRepository;
 
     @AfterEach
     void clearRedis() {
@@ -197,7 +189,6 @@ public class BookmarkServiceTest {
         // given
         Long userId = 1L;
         Long vetFacilityId = 1L;
-        String key = RedisKeyPrefix.VET_FACILITY_BOOKMARK + vetFacilityId;
 
         // when // then
         DeleteBookmarkRequest request = new DeleteBookmarkRequest(userId, vetFacilityId);
