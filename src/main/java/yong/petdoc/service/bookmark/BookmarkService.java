@@ -15,8 +15,8 @@ import yong.petdoc.service.redis.RedisService;
 import yong.petdoc.web.bookmark.dto.request.CreateBookmarkRequest;
 import yong.petdoc.web.bookmark.dto.request.DeleteBookmarkRequest;
 
-import static yong.petdoc.constant.redis.RedisKeyPrefix.VET_FACILITY_BOOKMARK;
-import static yong.petdoc.constant.redis.RedisKeyPrefix.VET_FACILITY_BOOKMARK_TARGET_IDS;
+import static yong.petdoc.constant.redis.RedisKey.VET_FACILITY_BOOKMARK_PREFIX;
+import static yong.petdoc.constant.redis.RedisKey.VET_FACILITY_BOOKMARK_TARGET_IDS;
 import static yong.petdoc.exception.ErrorCode.BOOKMARK_NOT_FOUND;
 import static yong.petdoc.exception.ErrorCode.DUPLICATE_BOOKMARK;
 
@@ -34,7 +34,7 @@ public class BookmarkService {
     public Long createBookmark(CreateBookmarkRequest request) {
         Long userId = request.userId();
         Long vetFacilityId = request.vetFacilityId();
-        String bookmarkSetKey = VET_FACILITY_BOOKMARK + vetFacilityId;
+        String bookmarkSetKey = VET_FACILITY_BOOKMARK_PREFIX + vetFacilityId;
         String bookmarkUserIdValue = String.valueOf(userId);
         String targetIdValue = String.valueOf(vetFacilityId);
 
@@ -69,7 +69,7 @@ public class BookmarkService {
     public void deleteBookmark(DeleteBookmarkRequest request) {
         Long userId = request.userId();
         Long vetFacilityId = request.vetFacilityId();
-        String key = VET_FACILITY_BOOKMARK + vetFacilityId;
+        String key = VET_FACILITY_BOOKMARK_PREFIX + vetFacilityId;
         String value = String.valueOf(userId);
 
         // Redis에서 삭제 대상이 존재하는지 확인

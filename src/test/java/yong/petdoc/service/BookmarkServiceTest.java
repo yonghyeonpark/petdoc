@@ -12,7 +12,7 @@ import org.springframework.data.redis.core.SetOperations;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import yong.petdoc.constant.redis.RedisKeyPrefix;
+import yong.petdoc.constant.redis.RedisKey;
 import yong.petdoc.domain.bookmark.Bookmark;
 import yong.petdoc.domain.bookmark.BookmarkRepository;
 import yong.petdoc.exception.CustomException;
@@ -63,7 +63,7 @@ public class BookmarkServiceTest {
         Long userId = 1L;
         Long vetFacilityId = 1L;
         CreateBookmarkRequest request = new CreateBookmarkRequest(userId, vetFacilityId);
-        String key = RedisKeyPrefix.VET_FACILITY_BOOKMARK + vetFacilityId;
+        String key = RedisKey.VET_FACILITY_BOOKMARK_PREFIX + vetFacilityId;
         SetOperations<String, String> ops = stringRedisTemplate.opsForSet();
 
         // when
@@ -84,7 +84,7 @@ public class BookmarkServiceTest {
         // given
         Long userId = 1L;
         Long vetFacilityId = 1L;
-        String key = RedisKeyPrefix.VET_FACILITY_BOOKMARK + vetFacilityId;
+        String key = RedisKey.VET_FACILITY_BOOKMARK_PREFIX + vetFacilityId;
 
         stringRedisTemplate.opsForSet().add(key, String.valueOf(userId));
 
@@ -103,7 +103,7 @@ public class BookmarkServiceTest {
         //given // when
         Long vetFacilityId = 1L;
         int threadCount = 30;
-        String key = RedisKeyPrefix.VET_FACILITY_BOOKMARK + vetFacilityId;
+        String key = RedisKey.VET_FACILITY_BOOKMARK_PREFIX + vetFacilityId;
         ExecutorService executorService = Executors.newFixedThreadPool(10);
         CountDownLatch latch = new CountDownLatch(threadCount);
 
@@ -138,7 +138,7 @@ public class BookmarkServiceTest {
         Long userId = 1L;
         Long vetFacilityId = 1L;
         int threadCount = 30;
-        String key = RedisKeyPrefix.VET_FACILITY_BOOKMARK + vetFacilityId;
+        String key = RedisKey.VET_FACILITY_BOOKMARK_PREFIX + vetFacilityId;
         ExecutorService executorService = Executors.newFixedThreadPool(10);
         CountDownLatch latch = new CountDownLatch(threadCount);
 
@@ -170,7 +170,7 @@ public class BookmarkServiceTest {
         // given
         Long userId = 1L;
         Long vetFacilityId = 1L;
-        String key = RedisKeyPrefix.VET_FACILITY_BOOKMARK + vetFacilityId;
+        String key = RedisKey.VET_FACILITY_BOOKMARK_PREFIX + vetFacilityId;
         CreateBookmarkRequest createRequest = new CreateBookmarkRequest(userId, vetFacilityId);
         bookmarkService.createBookmark(createRequest);
 

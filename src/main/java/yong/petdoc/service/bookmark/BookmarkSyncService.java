@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static yong.petdoc.constant.redis.RedisKeyPrefix.VET_FACILITY_BOOKMARK;
-import static yong.petdoc.constant.redis.RedisKeyPrefix.VET_FACILITY_BOOKMARK_TARGET_IDS;
+import static yong.petdoc.constant.redis.RedisKey.VET_FACILITY_BOOKMARK_PREFIX;
+import static yong.petdoc.constant.redis.RedisKey.VET_FACILITY_BOOKMARK_TARGET_IDS;
 
 @RequiredArgsConstructor
 @Service
@@ -35,7 +35,7 @@ public class BookmarkSyncService {
         List<VetFacility> vetFacilities = vetFacilityRepository.findAllById(ids);
         for (VetFacility vetFacility : vetFacilities) {
             Long vetFacilityId = vetFacility.getId();
-            String key = VET_FACILITY_BOOKMARK + vetFacilityId;
+            String key = VET_FACILITY_BOOKMARK_PREFIX + vetFacilityId;
             Long bookmarkCount = redisService.getSizeOfSet(key);
             if (bookmarkCount == 0) {
                 redisService.removeFromSet(VET_FACILITY_BOOKMARK_TARGET_IDS, String.valueOf(vetFacilityId));
