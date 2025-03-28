@@ -4,6 +4,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 @Service
 public class RedisService {
 
@@ -25,5 +27,9 @@ public class RedisService {
 
     public Long getSizeOfSet(String key) {
         return setOps.size(key);
+    }
+
+    public Set<String> getMembersOfSet(String key) {
+        return setOps.members(key);
     }
 }
