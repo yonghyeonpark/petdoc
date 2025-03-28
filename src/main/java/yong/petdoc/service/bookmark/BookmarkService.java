@@ -16,6 +16,7 @@ import yong.petdoc.web.bookmark.dto.request.CreateBookmarkRequest;
 import yong.petdoc.web.bookmark.dto.request.DeleteBookmarkRequest;
 
 import static yong.petdoc.constant.redis.RedisKeyPrefix.VET_FACILITY_BOOKMARK;
+import static yong.petdoc.constant.redis.RedisKeyPrefix.VET_FACILITY_BOOKMARK_TARGET_IDS;
 import static yong.petdoc.exception.ErrorCode.BOOKMARK_NOT_FOUND;
 import static yong.petdoc.exception.ErrorCode.DUPLICATE_BOOKMARK;
 
@@ -33,14 +34,20 @@ public class BookmarkService {
     public Long createBookmark(CreateBookmarkRequest request) {
         Long userId = request.userId();
         Long vetFacilityId = request.vetFacilityId();
-        String key = VET_FACILITY_BOOKMARK + vetFacilityId;
-        String value = String.valueOf(userId);
+        String bookmarkSetKey = VET_FACILITY_BOOKMARK + vetFacilityId;
+        String bookmarkUserIdValue = String.valueOf(userId);
+        String targetIdValue = String.valueOf(vetFacilityId);
+
+        // 해당 vetFacility에 즐겨찾기한 user 목록에 저장
+        Long added = redisService.addToSet(bookmarkSetKey, bookmarkUserIdValue);
 
         // Redis에서 vetFacilityId(key)에 해당하는 userId(value)가 존재하는지 확인
-        Long added = redisService.addToSet(key, value);
         if (added == null || added == 0) {
             throw new CustomException(DUPLICATE_BOOKMARK);
         }
+
+        // 즐겨찾기가 최소 1이상인 vetFacility 목록 관리
+        redisService.addToSet(VET_FACILITY_BOOKMARK_TARGET_IDS, targetIdValue);
 
         // Redis는 따로 롤백되지 않으므로 직접 처리
         try {
@@ -52,7 +59,8 @@ public class BookmarkService {
             return bookmarkRepository.save(bookmark)
                     .getId();
         } catch (RuntimeException e) {
-            redisService.removeFromSet(key, value);
+            redisService.removeFromSet(bookmarkSetKey, bookmarkUserIdValue);
+            redisService.removeFromSet(VET_FACILITY_BOOKMARK_TARGET_IDS, targetIdValue);
             throw e;
         }
     }
