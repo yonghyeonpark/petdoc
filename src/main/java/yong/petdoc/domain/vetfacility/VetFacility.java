@@ -54,4 +54,8 @@ public class VetFacility extends BaseTimeEntity {
         this.bookmarkCount = 0;
         this.isDeleted = false;
     }
+
+    public void asyncBookmarkCount(long bookmarkCount) {
+        this.bookmarkCount = bookmarkCount;
+    }
 }
