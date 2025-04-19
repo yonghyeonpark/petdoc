@@ -62,12 +62,12 @@ public class BookmarkServiceTest {
         // given
         Long userId = 1L;
         Long vetFacilityId = 1L;
-        CreateBookmarkRequest request = new CreateBookmarkRequest(userId, vetFacilityId);
+        CreateBookmarkRequest request = new CreateBookmarkRequest(userId);
         String key = RedisKey.VET_FACILITY_BOOKMARK_PREFIX + vetFacilityId;
         SetOperations<String, String> ops = stringRedisTemplate.opsForSet();
 
         // when
-        Long bookmarkId = bookmarkService.createBookmark(request);
+        Long bookmarkId = bookmarkService.createBookmark(vetFacilityId, request);
 
         // then
         assertThat(ops.isMember(key, String.valueOf(userId))).isTrue();
@@ -88,10 +88,10 @@ public class BookmarkServiceTest {
 
         stringRedisTemplate.opsForSet().add(key, String.valueOf(userId));
 
-        CreateBookmarkRequest request = new CreateBookmarkRequest(userId, vetFacilityId);
+        CreateBookmarkRequest request = new CreateBookmarkRequest(userId);
 
         // when // then
-        assertThatThrownBy(() -> bookmarkService.createBookmark(request))
+        assertThatThrownBy(() -> bookmarkService.createBookmark(vetFacilityId, request))
                 .isInstanceOf(CustomException.class)
                 .hasMessage(DUPLICATE_BOOKMARK.getMessage());
     }
@@ -111,8 +111,8 @@ public class BookmarkServiceTest {
             Long userId = (long) i;
             executorService.submit(() -> {
                 try {
-                    CreateBookmarkRequest request = new CreateBookmarkRequest(userId, vetFacilityId);
-                    bookmarkService.createBookmark(request);
+                    CreateBookmarkRequest request = new CreateBookmarkRequest(userId);
+                    bookmarkService.createBookmark(vetFacilityId, request);
                 } catch (Exception ignored) {
                 } finally {
                     latch.countDown();
@@ -145,8 +145,8 @@ public class BookmarkServiceTest {
         for (int i = 1; i <= threadCount; i++) {
             executorService.submit(() -> {
                 try {
-                    CreateBookmarkRequest request = new CreateBookmarkRequest(userId, vetFacilityId);
-                    bookmarkService.createBookmark(request);
+                    CreateBookmarkRequest request = new CreateBookmarkRequest(userId);
+                    bookmarkService.createBookmark(vetFacilityId, request);
                 } catch (Exception ignored) {
                 } finally {
                     latch.countDown();
@@ -171,12 +171,12 @@ public class BookmarkServiceTest {
         Long userId = 1L;
         Long vetFacilityId = 1L;
         String key = RedisKey.VET_FACILITY_BOOKMARK_PREFIX + vetFacilityId;
-        CreateBookmarkRequest createRequest = new CreateBookmarkRequest(userId, vetFacilityId);
-        bookmarkService.createBookmark(createRequest);
+        CreateBookmarkRequest createRequest = new CreateBookmarkRequest(userId);
+        bookmarkService.createBookmark(vetFacilityId, createRequest);
 
         // when
-        DeleteBookmarkRequest deleteRequest = new DeleteBookmarkRequest(userId, vetFacilityId);
-        bookmarkService.deleteBookmark(deleteRequest);
+        DeleteBookmarkRequest deleteRequest = new DeleteBookmarkRequest(userId);
+        bookmarkService.deleteBookmark(vetFacilityId, deleteRequest);
 
         // then
         assertThat(stringRedisTemplate.opsForSet().size(key)).isEqualTo(0);
@@ -191,8 +191,8 @@ public class BookmarkServiceTest {
         Long vetFacilityId = 1L;
 
         // when // then
-        DeleteBookmarkRequest request = new DeleteBookmarkRequest(userId, vetFacilityId);
-        assertThatThrownBy(() -> bookmarkService.deleteBookmark(request))
+        DeleteBookmarkRequest request = new DeleteBookmarkRequest(userId);
+        assertThatThrownBy(() -> bookmarkService.deleteBookmark(vetFacilityId, request))
                 .isInstanceOf(CustomException.class)
                 .hasMessage(BOOKMARK_NOT_FOUND.getMessage());
     }
