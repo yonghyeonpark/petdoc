@@ -31,9 +31,8 @@ public class BookmarkService {
     private final RedisService redisService;
 
     @Transactional
-    public Long createBookmark(CreateBookmarkRequest request) {
+    public Long createBookmark(Long vetFacilityId, CreateBookmarkRequest request) {
         Long userId = request.userId();
-        Long vetFacilityId = request.vetFacilityId();
         String bookmarkSetKey = VET_FACILITY_BOOKMARK_PREFIX + vetFacilityId;
         String bookmarkUserIdValue = String.valueOf(userId);
         String targetIdValue = String.valueOf(vetFacilityId);
@@ -66,9 +65,8 @@ public class BookmarkService {
     }
 
     @Transactional
-    public void deleteBookmark(DeleteBookmarkRequest request) {
+    public void deleteBookmark(Long vetFacilityId, DeleteBookmarkRequest request) {
         Long userId = request.userId();
-        Long vetFacilityId = request.vetFacilityId();
         String key = VET_FACILITY_BOOKMARK_PREFIX + vetFacilityId;
         String value = String.valueOf(userId);
 
