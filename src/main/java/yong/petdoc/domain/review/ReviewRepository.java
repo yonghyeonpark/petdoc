@@ -9,4 +9,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findByVetFacilityId(Long vetFacilityId);
 
     Review findByVetFacilityIdAndUserId(Long vetFacilityId, Long userId);
+
+    void deleteByVetFacilityIdAndUserId(Long vetFacilityId, Long userId);
 }
