@@ -4,13 +4,14 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import yong.petdoc.domain.BaseTimeEntity;
 import yong.petdoc.domain.user.User;
 import yong.petdoc.domain.vetfacility.VetFacility;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Review {
+public class Review extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
