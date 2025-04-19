@@ -1,12 +1,12 @@
 package yong.petdoc.web.vetfacility;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import yong.petdoc.service.review.ReviewService;
 import yong.petdoc.service.vetfacility.VetFacilityService;
+import yong.petdoc.web.review.dto.request.CreateReviewRequest;
 import yong.petdoc.web.vetfacility.dto.response.VetFacilityResponse;
 
 @RequiredArgsConstructor
@@ -15,11 +15,23 @@ import yong.petdoc.web.vetfacility.dto.response.VetFacilityResponse;
 public class VetFacilityController {
 
     private final VetFacilityService vetFacilityService;
+    private final ReviewService reviewService;
 
     @GetMapping("/{facilityId}")
     public ResponseEntity<VetFacilityResponse> getVetFacilityById(@PathVariable Long facilityId) {
         return ResponseEntity
                 .ok()
                 .body(vetFacilityService.getVetFacilityById(facilityId));
+    }
+
+    @PostMapping("/{facilityId}/reviews")
+    public ResponseEntity<Void> createReview(
+            @PathVariable Long facilityId,
+            @RequestBody CreateReviewRequest request
+    ) {
+        reviewService.createReview(facilityId, request);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .build();
     }
 }

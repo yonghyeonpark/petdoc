@@ -26,10 +26,10 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
 
     @Transactional
-    public void save(CreateReviewRequest request) {
+    public void createReview(Long vetFacilityId, CreateReviewRequest request) {
         User user = userRepository.findById(request.userId())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        VetFacility vetFacility = vetFacilityRepository.findById(request.vetFacilityId())
+        VetFacility vetFacility = vetFacilityRepository.findById(vetFacilityId)
                 .orElseThrow(() -> new CustomException(ErrorCode.VET_FACILITY_NOT_FOUND));
 
         Review review = new Review(
@@ -45,4 +45,8 @@ public class ReviewService {
                 .map(ReviewResponse::from)
                 .toList();
     }
+
+    // 리뷰 수정
+
+    // 리뷰 삭제
 }
