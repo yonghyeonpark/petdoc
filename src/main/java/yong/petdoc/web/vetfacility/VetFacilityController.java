@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import yong.petdoc.service.review.ReviewService;
 import yong.petdoc.service.vetfacility.VetFacilityService;
 import yong.petdoc.web.review.dto.request.CreateReviewRequest;
+import yong.petdoc.web.review.dto.request.DeleteReviewRequest;
 import yong.petdoc.web.review.dto.request.UpdateReviewRequest;
 import yong.petdoc.web.vetfacility.dto.response.VetFacilityResponse;
 
@@ -42,6 +43,17 @@ public class VetFacilityController {
             @RequestBody UpdateReviewRequest request
     ) {
         reviewService.updateReview(facilityId, request);
+        return ResponseEntity
+                .noContent()
+                .build();
+    }
+
+    @DeleteMapping("/{facilityId}/reviews")
+    public ResponseEntity<Void> deleteReview(
+            @PathVariable Long facilityId,
+            @RequestBody DeleteReviewRequest request
+    ) {
+        reviewService.deleteReview(facilityId, request);
         return ResponseEntity
                 .noContent()
                 .build();

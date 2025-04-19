@@ -56,6 +56,6 @@ public class ReviewService {
 
     @Transactional
     public void deleteReview(Long vetFacilityId, DeleteReviewRequest request) {
-        
+        reviewRepository.deleteByVetFacilityIdAndUserId(vetFacilityId, request.userId());
     }
 }
