@@ -12,6 +12,9 @@ import yong.petdoc.domain.vetfacility.VetFacilityRepository;
 import yong.petdoc.exception.CustomException;
 import yong.petdoc.exception.ErrorCode;
 import yong.petdoc.web.review.dto.request.CreateReviewRequest;
+import yong.petdoc.web.review.dto.response.ReviewResponse;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -35,5 +38,11 @@ public class ReviewService {
                 vetFacility
         );
         reviewRepository.save(review);
+    }
+
+    public List<ReviewResponse> getReviewsByVetFacilityId(Long vetFacilityId) {
+        return reviewRepository.findByVetFacilityId(vetFacilityId).stream()
+                .map(ReviewResponse::from)
+                .toList();
     }
 }
