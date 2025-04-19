@@ -31,18 +31,18 @@ VALUES ('user1@test.com', 'password1', 'user1', NULL, false),
        ('user30@test.com', 'password30', 'user30', NULL, false);
 
 INSERT INTO vet_facility (vet_facility_type, province, name, location, lot_address, road_address,
-                          phone_number, place_url, grade, bookmark_count, is_deleted)
+                          phone_number, place_url, bookmark_count, is_deleted)
 VALUES ('HOSPITAL', 'SEOUL', '서울동물병원', null, '서울 중구 남대문로 1', '서울 중구 세종대로 110',
-        '02-123-4567', null, 0.0, 0, false),
+        '02-123-4567', null, 0, false),
        ('PHARMACY', 'BUSAN', '부산동물약국', null, '부산 중구 중앙대로 1', '부산 중구 중앙로 12',
-        '051-234-5678', null, 0.0, 0, false),
+        '051-234-5678', null, 0, false),
        ('HOSPITAL', 'DAEGU', '대구동물병원', null, '대구 중구 동성로 1', '대구 중구 중앙대로 55',
-        '053-345-6789', null, 0.0, 0, false),
+        '053-345-6789', null, 0, false),
        ('PHARMACY', 'GANGWONDO', '강원동물약국', null, '강원 원주시 봉산로 1', '강원 원주시 중앙로 22',
-        '033-456-7890', null, 0.0, 0, false),
+        '033-456-7890', null, 0, false),
        ('HOSPITAL', 'JEJUDO', '제주동물병원', null, '제주 제주시 중앙로 1', '제주 제주시 신대로 99',
-        '064-567-8901', null, 0.0, 0, false),
+        '064-567-8901', null, 0, false),
        ('PHARMACY', 'ULSAN', '울산동물약국', null, '울산 남구 번영로 1', '울산 남구 삼산로 78',
-        '052-333-4444', NULL, 0.0, 0, false),
+        '052-333-4444', NULL, 0, false),
        ('HOSPITAL', 'DAEJEON', '대전동물병원', null, '대전 중구 중앙로 1', '대전 중구 대종로 45',
-        '042-111-2222', NULL, 0.0, 0, false);
+        '042-111-2222', NULL, 0, false);

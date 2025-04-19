@@ -9,7 +9,6 @@ public record VetFacilityResponse(
         String roadAddress,
         String phoneNumber,
         String placeUrl,
-        double grade,
         long bookmarkCount
 ) {
 
@@ -21,7 +20,6 @@ public record VetFacilityResponse(
                 vetFacility.getRoadAddress(),
                 vetFacility.getPhoneNumber(),
                 vetFacility.getPlaceUrl(),
-                vetFacility.getGrade(),
                 bookmarkCount
         );
     }
