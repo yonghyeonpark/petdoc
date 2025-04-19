@@ -12,6 +12,8 @@ import yong.petdoc.domain.vetfacility.VetFacilityRepository;
 import yong.petdoc.exception.CustomException;
 import yong.petdoc.exception.ErrorCode;
 import yong.petdoc.web.review.dto.request.CreateReviewRequest;
+import yong.petdoc.web.review.dto.request.DeleteReviewRequest;
+import yong.petdoc.web.review.dto.request.UpdateReviewRequest;
 import yong.petdoc.web.review.dto.response.ReviewResponse;
 
 import java.util.List;
@@ -46,7 +48,14 @@ public class ReviewService {
                 .toList();
     }
 
-    // 리뷰 수정
+    @Transactional
+    public void updateReview(Long vetFacilityId, UpdateReviewRequest request) {
+        Review review = reviewRepository.findByVetFacilityIdAndUserId(vetFacilityId, request.userId());
+        review.updateComment(request.comment());
+    }
 
-    // 리뷰 삭제
+    @Transactional
+    public void deleteReview(Long vetFacilityId, DeleteReviewRequest request) {
+        
+    }
 }

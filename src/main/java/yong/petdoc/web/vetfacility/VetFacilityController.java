@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import yong.petdoc.service.review.ReviewService;
 import yong.petdoc.service.vetfacility.VetFacilityService;
 import yong.petdoc.web.review.dto.request.CreateReviewRequest;
+import yong.petdoc.web.review.dto.request.UpdateReviewRequest;
 import yong.petdoc.web.vetfacility.dto.response.VetFacilityResponse;
 
 @RequiredArgsConstructor
@@ -32,6 +33,17 @@ public class VetFacilityController {
         reviewService.createReview(facilityId, request);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
+                .build();
+    }
+
+    @PutMapping("/{facilityId}/reviews")
+    public ResponseEntity<Void> updateReview(
+            @PathVariable Long facilityId,
+            @RequestBody UpdateReviewRequest request
+    ) {
+        reviewService.updateReview(facilityId, request);
+        return ResponseEntity
+                .noContent()
                 .build();
     }
 }
