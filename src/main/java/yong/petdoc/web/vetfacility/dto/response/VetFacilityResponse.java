@@ -1,6 +1,9 @@
 package yong.petdoc.web.vetfacility.dto.response;
 
 import yong.petdoc.domain.vetfacility.VetFacility;
+import yong.petdoc.web.review.dto.response.ReviewResponse;
+
+import java.util.List;
 
 public record VetFacilityResponse(
         Long id,
@@ -9,10 +12,15 @@ public record VetFacilityResponse(
         String roadAddress,
         String phoneNumber,
         String placeUrl,
-        long bookmarkCount
+        long bookmarkCount,
+        List<ReviewResponse> reviews
 ) {
 
-    public static VetFacilityResponse from(VetFacility vetFacility, long bookmarkCount) {
+    public static VetFacilityResponse from(
+            VetFacility vetFacility,
+            long bookmarkCount,
+            List<ReviewResponse> reviews
+    ) {
         return new VetFacilityResponse(
                 vetFacility.getId(),
                 vetFacility.getName(),
@@ -20,7 +28,8 @@ public record VetFacilityResponse(
                 vetFacility.getRoadAddress(),
                 vetFacility.getPhoneNumber(),
                 vetFacility.getPlaceUrl(),
-                bookmarkCount
+                bookmarkCount,
+                reviews
         );
     }
 }
