@@ -34,4 +34,8 @@ public class Review extends BaseTimeEntity {
         this.user = user;
         this.vetFacility = vetFacility;
     }
+
+    public void updateComment(String comment) {
+        this.comment = comment;
+    }
 }
