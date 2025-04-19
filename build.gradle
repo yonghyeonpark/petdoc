@@ -43,7 +43,7 @@ dependencies {
     implementation 'org.locationtech.jts:jts-core:1.18.2'
 
     // 문서 파일 처리
-    implementation 'org.apache.poi:poi-ooxml:5.3.0'
+    implementation 'org.apache.poi:poi-ooxml:5.4.0'
 
     // Lombok
     compileOnly 'org.projectlombok:lombok'
