@@ -45,4 +45,14 @@ VALUES ('HOSPITAL', 'SEOUL', '서울동물병원', null, '서울 중구 남대�
        ('PHARMACY', 'ULSAN', '울산동물약국', null, '울산 남구 번영로 1', '울산 남구 삼산로 78',
         '052-333-4444', NULL, 0, false),
        ('HOSPITAL', 'DAEJEON', '대전동물병원', null, '대전 중구 중앙로 1', '대전 중구 대종로 45',
-        '042-111-2222', NULL, 0, false);
+        '042-111-2222', NULL, 0, false),
+       ('PHARMACY', 'SEJONG', '세종동물약국', null, '세종시 가람로 1', '세종시 한누리대로 22',
+        '044-222-3333', null, 0, false),
+       ('HOSPITAL', 'GYEONGGIDO', '경기동물병원', null, '경기 수원시 영통구 광교로 10', '경기 수원시 권선로 99',
+        '031-888-9999', null, 0, false),
+       ('PHARMACY', 'CHUNGCHEONG_BUKDO', '충북동물약국', null, '충북 청주시 상당로 7', '충북 청주시 서원로 18',
+        '043-123-4567', null, 0, false),
+       ('HOSPITAL', 'CHUNGCHEONG_NAMDO', '충남동물병원', null, '충남 천안시 쌍용로 8', '충남 천안시 백석로 31',
+        '041-987-6543', null, 0, false),
+       ('PHARMACY', 'JEOLLA_BUKDO', '전북동물약국', null, '전북 전주시 완산구 전라로 3', '전북 전주시 덕진로 20',
+        '063-444-5555', null, 0, false);
