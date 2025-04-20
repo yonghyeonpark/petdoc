@@ -72,13 +72,13 @@ public class BookmarkServiceTest {
         SetOperations<String, String> ops = stringRedisTemplate.opsForSet();
 
         // when
-        Long bookmarkId = bookmarkService.createBookmark(vetFacilityId, request);
+        bookmarkService.createBookmark(vetFacilityId, request);
 
         // then
         assertThat(ops.isMember(key, String.valueOf(userId))).isTrue();
         assertThat(ops.size(key)).isEqualTo(1);
 
-        Bookmark bookmark = bookmarkRepository.findById(bookmarkId).get();
+        Bookmark bookmark = bookmarkRepository.findAll().get(0);
         assertThat(bookmark.getUser().getId()).isEqualTo(userId);
         assertThat(bookmark.getVetFacility().getId()).isEqualTo(vetFacilityId);
     }

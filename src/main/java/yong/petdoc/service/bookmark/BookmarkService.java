@@ -38,7 +38,7 @@ public class BookmarkService {
     private final RedisService redisService;
 
     @Transactional
-    public Long createBookmark(Long vetFacilityId, CreateBookmarkRequest request) {
+    public void createBookmark(Long vetFacilityId, CreateBookmarkRequest request) {
         Long userId = request.userId();
         String bookmarkSetKey = VET_FACILITY_BOOKMARK_PREFIX + vetFacilityId;
         String bookmarkUserIdValue = String.valueOf(userId);
@@ -62,8 +62,7 @@ public class BookmarkService {
             VetFacility vetFacility = vetFacilityRepository.findById(vetFacilityId)
                     .orElseThrow(() -> new CustomException(ErrorCode.VET_FACILITY_NOT_FOUND));
             Bookmark bookmark = new Bookmark(user, vetFacility);
-            return bookmarkRepository.save(bookmark)
-                    .getId();
+            bookmarkRepository.save(bookmark);
         } catch (RuntimeException e) {
             redisService.removeFromSet(bookmarkSetKey, bookmarkUserIdValue);
             redisService.removeFromSet(VET_FACILITY_BOOKMARK_TARGET_IDS, targetIdValue);

@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 import yong.petdoc.service.bookmark.BookmarkService;
 import yong.petdoc.service.review.ReviewService;
 import yong.petdoc.service.vetfacility.VetFacilityService;
@@ -15,8 +14,6 @@ import yong.petdoc.web.review.dto.request.DeleteReviewRequest;
 import yong.petdoc.web.review.dto.request.UpdateReviewRequest;
 import yong.petdoc.web.vetfacility.dto.request.GetVetFacilityRequest;
 import yong.petdoc.web.vetfacility.dto.response.VetFacilityResponse;
-
-import java.net.URI;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/facilities")
@@ -73,16 +70,11 @@ public class VetFacilityController {
     @PostMapping("/{facilityId}/bookmarks")
     public ResponseEntity<Void> createBookmark(
             @PathVariable Long facilityId,
-            @RequestBody CreateBookmarkRequest request,
-            UriComponentsBuilder uriComponentsBuilder
+            @RequestBody CreateBookmarkRequest request
     ) {
-        Long bookmarkId = bookmarkService.createBookmark(facilityId, request);
-        URI location = uriComponentsBuilder
-                .path("/api/bookmarks/{bookmarkId}")
-                .buildAndExpand(bookmarkId)
-                .toUri();
+        bookmarkService.createBookmark(facilityId, request);
         return ResponseEntity
-                .created(location)
+                .status(HttpStatus.CREATED)
                 .build();
     }
 
