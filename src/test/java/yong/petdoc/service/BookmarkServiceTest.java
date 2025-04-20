@@ -6,6 +6,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
@@ -19,6 +22,8 @@ import yong.petdoc.exception.CustomException;
 import yong.petdoc.service.bookmark.BookmarkService;
 import yong.petdoc.web.bookmark.dto.request.CreateBookmarkRequest;
 import yong.petdoc.web.bookmark.dto.request.DeleteBookmarkRequest;
+import yong.petdoc.web.bookmark.dto.request.GetMyBookmarksRequest;
+import yong.petdoc.web.bookmark.dto.response.MyBookmarksResponse;
 
 import java.time.Duration;
 import java.util.concurrent.CountDownLatch;
@@ -195,5 +200,28 @@ public class BookmarkServiceTest {
         assertThatThrownBy(() -> bookmarkService.deleteBookmark(vetFacilityId, request))
                 .isInstanceOf(CustomException.class)
                 .hasMessage(BOOKMARK_NOT_FOUND.getMessage());
+    }
+
+    @DisplayName("내가 등록한 즐겨찾기 목록을 페이지네이션으로 조회하면 요청한 페이지 정보와 데이터가 응답된다.")
+    @Test
+    void getMyBookmarks_withPagination() {
+        // given
+        Long userId = 1L;
+        GetMyBookmarksRequest request = new GetMyBookmarksRequest(userId);
+
+        for (long i = 1; i <= 7; i++) {
+            bookmarkService.createBookmark(i, new CreateBookmarkRequest(userId));
+        }
+
+        // when
+        Pageable pageable = PageRequest.of(1, 3, Sort.by("createdAt").descending());
+        MyBookmarksResponse myBookmarks = bookmarkService.getMyBookmarks(request, pageable);
+
+        // then
+        assertThat(myBookmarks.bookmarks().size()).isEqualTo(3);
+        assertThat(myBookmarks.page()).isEqualTo(1);
+        assertThat(myBookmarks.size()).isEqualTo(3);
+        assertThat(myBookmarks.totalPages()).isEqualTo(3);
+        assertThat(myBookmarks.totalElements()).isEqualTo(7);
     }
 }
