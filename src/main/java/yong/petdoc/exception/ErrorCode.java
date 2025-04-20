@@ -28,7 +28,10 @@ public enum ErrorCode {
 
     // 배치 작업 관련
     JOB_NOT_FOUND(HttpStatus.NOT_FOUND, "요청한 배치 작업을 찾을 수 없습니다."),
-    JOB_EXECUTION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "배치 작업 실행 중 문제가 발생했습니다.");
+    JOB_EXECUTION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "배치 작업 실행 중 문제가 발생했습니다."),
+
+    // JSON 직렬화 관련
+    JSON_SERIALIZATION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "JSON 직렬화 중 문제가 발생했습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
