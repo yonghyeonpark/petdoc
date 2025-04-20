@@ -4,6 +4,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import yong.petdoc.domain.review.Review;
@@ -11,7 +14,9 @@ import yong.petdoc.domain.review.ReviewRepository;
 import yong.petdoc.service.review.ReviewService;
 import yong.petdoc.web.review.dto.request.CreateReviewRequest;
 import yong.petdoc.web.review.dto.request.DeleteReviewRequest;
+import yong.petdoc.web.review.dto.request.GetMyReviewsRequest;
 import yong.petdoc.web.review.dto.request.UpdateReviewRequest;
+import yong.petdoc.web.review.dto.response.MyReviewsResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -79,5 +84,29 @@ public class ReviewServiceTest {
 
         // then
         assertThat(reviewRepository.findAll().size()).isEqualTo(0);
+    }
+
+    @DisplayName("내가 생성한 리뷰 목록을 페이지네이션으로 조회하면 요청한 페이지 정보와 데이터가 응답된다.")
+    @Test
+    void getMyReviews_withPagination() {
+        // given
+        Long userId = 1L;
+        String comment = "good";
+        GetMyReviewsRequest request = new GetMyReviewsRequest(userId);
+
+        for (long i = 1; i <= 7; i++) {
+            reviewService.createReview(i, new CreateReviewRequest(comment, userId));
+        }
+
+        // when
+        Pageable pageable = PageRequest.of(1, 2, Sort.by("createdAt").descending());
+        MyReviewsResponse myReviews = reviewService.getMyReviews(request, pageable);
+
+        // then
+        assertThat(myReviews.reviews().size()).isEqualTo(2);
+        assertThat(myReviews.page()).isEqualTo(1);
+        assertThat(myReviews.size()).isEqualTo(2);
+        assertThat(myReviews.totalPages()).isEqualTo(4);
+        assertThat(myReviews.totalElements()).isEqualTo(7);
     }
 }
