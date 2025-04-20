@@ -106,4 +106,8 @@ public class BookmarkService {
                 bookmarkPage.hasNext()
         );
     }
+
+    public boolean isBookmarked(Long vetFacilityId, Long userId) {
+        return bookmarkRepository.existsByVetFacilityIdAndUserId(vetFacilityId, userId);
+    }
 }
