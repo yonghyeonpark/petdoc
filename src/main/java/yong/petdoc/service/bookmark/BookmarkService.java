@@ -1,6 +1,8 @@
 package yong.petdoc.service.bookmark;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import yong.petdoc.domain.bookmark.Bookmark;
@@ -14,6 +16,11 @@ import yong.petdoc.exception.ErrorCode;
 import yong.petdoc.service.redis.RedisService;
 import yong.petdoc.web.bookmark.dto.request.CreateBookmarkRequest;
 import yong.petdoc.web.bookmark.dto.request.DeleteBookmarkRequest;
+import yong.petdoc.web.bookmark.dto.request.GetMyBookmarksRequest;
+import yong.petdoc.web.bookmark.dto.response.BookmarkResponse;
+import yong.petdoc.web.bookmark.dto.response.MyBookmarksResponse;
+
+import java.util.List;
 
 import static yong.petdoc.constant.redis.RedisKey.VET_FACILITY_BOOKMARK_PREFIX;
 import static yong.petdoc.constant.redis.RedisKey.VET_FACILITY_BOOKMARK_TARGET_IDS;
@@ -83,5 +90,20 @@ public class BookmarkService {
             redisService.addToSet(key, value);
             throw e;
         }
+    }
+
+    public MyBookmarksResponse getMyBookmarks(GetMyBookmarksRequest request, Pageable pageable) {
+        Page<Bookmark> bookmarkPage = bookmarkRepository.findByUserId(request.userId(), pageable);
+        List<BookmarkResponse> bookmarks = bookmarkPage.getContent().stream()
+                .map(b -> BookmarkResponse.from(b.getId(), b.getVetFacility()))
+                .toList();
+        return new MyBookmarksResponse(
+                bookmarks,
+                bookmarkPage.getNumber(),
+                bookmarkPage.getSize(),
+                bookmarkPage.getTotalPages(),
+                bookmarkPage.getTotalElements(),
+                bookmarkPage.hasNext()
+        );
     }
 }
