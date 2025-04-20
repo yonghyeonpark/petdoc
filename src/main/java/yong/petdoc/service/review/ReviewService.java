@@ -1,6 +1,8 @@
 package yong.petdoc.service.review;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import yong.petdoc.domain.review.Review;
@@ -13,7 +15,9 @@ import yong.petdoc.exception.CustomException;
 import yong.petdoc.exception.ErrorCode;
 import yong.petdoc.web.review.dto.request.CreateReviewRequest;
 import yong.petdoc.web.review.dto.request.DeleteReviewRequest;
+import yong.petdoc.web.review.dto.request.GetMyReviewsRequest;
 import yong.petdoc.web.review.dto.request.UpdateReviewRequest;
+import yong.petdoc.web.review.dto.response.MyReviewsResponse;
 import yong.petdoc.web.review.dto.response.ReviewResponse;
 
 import java.util.List;
@@ -57,5 +61,20 @@ public class ReviewService {
     @Transactional
     public void deleteReview(Long vetFacilityId, DeleteReviewRequest request) {
         reviewRepository.deleteByVetFacilityIdAndUserId(vetFacilityId, request.userId());
+    }
+
+    public MyReviewsResponse getMyReviews(GetMyReviewsRequest request, Pageable pageable) {
+        Page<Review> reviewPage = reviewRepository.findByUserId(request.userId(), pageable);
+        List<ReviewResponse> reviews = reviewPage.getContent().stream()
+                .map(ReviewResponse::from)
+                .toList();
+        return new MyReviewsResponse(
+                reviews,
+                reviewPage.getNumber(),
+                reviewPage.getSize(),
+                reviewPage.getTotalPages(),
+                reviewPage.getTotalElements(),
+                reviewPage.hasNext()
+        );
     }
 }

@@ -1,13 +1,14 @@
 package yong.petdoc.web.user;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+import yong.petdoc.service.review.ReviewService;
 import yong.petdoc.service.user.UserService;
+import yong.petdoc.web.review.dto.request.GetMyReviewsRequest;
+import yong.petdoc.web.review.dto.response.MyReviewsResponse;
 import yong.petdoc.web.user.dto.request.CreateUserRequest;
 
 import java.net.URI;
@@ -18,6 +19,7 @@ import java.net.URI;
 public class UserController {
 
     private final UserService userService;
+    private final ReviewService reviewService;
 
     @PostMapping
     public ResponseEntity<Void> createUser(
@@ -32,5 +34,14 @@ public class UserController {
         return ResponseEntity
                 .created(location)
                 .build();
+    }
+
+    @GetMapping("/me/reviews")
+    public ResponseEntity<MyReviewsResponse> getReviewsByUserId(
+            @RequestBody GetMyReviewsRequest request,
+            Pageable pageable
+    ) {
+        return ResponseEntity
+                .ok(reviewService.getMyReviews(request, pageable));
     }
 }
