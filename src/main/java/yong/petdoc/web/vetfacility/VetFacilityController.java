@@ -13,6 +13,7 @@ import yong.petdoc.web.bookmark.dto.request.DeleteBookmarkRequest;
 import yong.petdoc.web.review.dto.request.CreateReviewRequest;
 import yong.petdoc.web.review.dto.request.DeleteReviewRequest;
 import yong.petdoc.web.review.dto.request.UpdateReviewRequest;
+import yong.petdoc.web.vetfacility.dto.request.GetVetFacilityRequest;
 import yong.petdoc.web.vetfacility.dto.response.VetFacilityResponse;
 
 import java.net.URI;
@@ -27,10 +28,13 @@ public class VetFacilityController {
     private final BookmarkService bookmarkService;
 
     @GetMapping("/{facilityId}")
-    public ResponseEntity<VetFacilityResponse> getVetFacilityById(@PathVariable Long facilityId) {
+    public ResponseEntity<VetFacilityResponse> getVetFacilityById(
+            @PathVariable Long facilityId,
+            @RequestBody GetVetFacilityRequest request
+    ) {
         return ResponseEntity
                 .ok()
-                .body(vetFacilityService.getVetFacilityById(facilityId));
+                .body(vetFacilityService.getVetFacilityById(facilityId, request));
     }
 
     @PostMapping("/{facilityId}/reviews")

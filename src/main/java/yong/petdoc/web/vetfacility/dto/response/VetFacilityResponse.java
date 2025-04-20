@@ -13,13 +13,15 @@ public record VetFacilityResponse(
         String phoneNumber,
         String placeUrl,
         long bookmarkCount,
-        List<ReviewResponse> reviews
+        List<ReviewResponse> reviews,
+        boolean isBookmarked
 ) {
 
     public static VetFacilityResponse from(
             VetFacility vetFacility,
             long bookmarkCount,
-            List<ReviewResponse> reviews
+            List<ReviewResponse> reviews,
+            boolean isBookmarked
     ) {
         return new VetFacilityResponse(
                 vetFacility.getId(),
@@ -29,7 +31,8 @@ public record VetFacilityResponse(
                 vetFacility.getPhoneNumber(),
                 vetFacility.getPlaceUrl(),
                 bookmarkCount,
-                reviews
+                reviews,
+                isBookmarked
         );
     }
 }

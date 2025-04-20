@@ -10,6 +10,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import yong.petdoc.service.vetfacility.VetFacilityService;
+import yong.petdoc.web.vetfacility.dto.request.GetVetFacilityRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -35,12 +36,13 @@ public class VetFacilityServiceTest {
     @Test
     void getVetFacilityById() {
         // given
+        Long userId = 1L;
         Long vetFacilityId = 1L;
         String name = "서울동물병원";
         Long bookmarkCount = 0L;
 
         // when // then
-        assertThat(vetFacilityService.getVetFacilityById(vetFacilityId))
+        assertThat(vetFacilityService.getVetFacilityById(vetFacilityId, new GetVetFacilityRequest(userId)))
                 .extracting("id", "name", "bookmarkCount")
                 .containsExactly(vetFacilityId, name, bookmarkCount);
     }
