@@ -224,4 +224,29 @@ public class BookmarkServiceTest {
         assertThat(myBookmarks.totalPages()).isEqualTo(3);
         assertThat(myBookmarks.totalElements()).isEqualTo(7);
     }
+
+    @DisplayName("즐겨찾기를 등록한 상태면 isBookmarked 호출에 true를 반환한다.")
+    @Test
+    void isBookmarked_returnsTrue_ifBookmarked() {
+        // given
+        Long userId = 1L;
+        Long vetFacilityId = 1L;
+
+        // when
+        bookmarkService.createBookmark(vetFacilityId, new CreateBookmarkRequest(userId));
+
+        // then
+        assertThat(bookmarkService.isBookmarked(vetFacilityId, userId)).isTrue();
+    }
+
+    @DisplayName("즐겨찾기를 등록하지 않은 상태면 isBookmarked 호출에 false를 반환한다.")
+    @Test
+    void isBookmarked_returnsFalse_ifNotBookmarked() {
+        // given
+        Long userId = 1L;
+        Long vetFacilityId = 1L;
+
+        // when // then
+        assertThat(bookmarkService.isBookmarked(vetFacilityId, userId)).isFalse();
+    }
 }
