@@ -12,8 +12,11 @@ import yong.petdoc.service.bookmark.BookmarkService;
 import yong.petdoc.service.redis.RedisService;
 import yong.petdoc.service.review.ReviewService;
 import yong.petdoc.service.vetfacility.dto.RecentVetFacilityDto;
+import yong.petdoc.web.vetfacility.dto.request.GetRecentVetFacilitiesRequest;
 import yong.petdoc.web.vetfacility.dto.request.GetVetFacilityRequest;
 import yong.petdoc.web.vetfacility.dto.response.VetFacilityResponse;
+
+import java.util.List;
 
 import static yong.petdoc.constant.redis.RedisKey.VET_FACILITY_BOOKMARK_PREFIX;
 import static yong.petdoc.constant.redis.RedisKey.VET_FACILITY_RECENT_BY_USER_PREFIX;
@@ -59,5 +62,17 @@ public class VetFacilityService {
                 reviewService.getReviewsByVetFacilityId(facilityId),
                 bookmarkService.isBookmarked(facilityId, userId)
         );
+    }
+
+    public List<RecentVetFacilityDto> getRecentVetFacilities(GetRecentVetFacilitiesRequest request) {
+        return redisService.getRecentVetFacilities(VET_FACILITY_RECENT_BY_USER_PREFIX + request.userId()).stream()
+                .map(json -> {
+                    try {
+                        return objectMapper.readValue(json, RecentVetFacilityDto.class);
+                    } catch (JsonProcessingException e) {
+                        throw new CustomException(JSON_SERIALIZATION_FAILED, e);
+                    }
+                })
+                .toList();
     }
 }

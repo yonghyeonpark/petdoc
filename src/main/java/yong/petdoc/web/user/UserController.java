@@ -8,13 +8,17 @@ import org.springframework.web.util.UriComponentsBuilder;
 import yong.petdoc.service.bookmark.BookmarkService;
 import yong.petdoc.service.review.ReviewService;
 import yong.petdoc.service.user.UserService;
+import yong.petdoc.service.vetfacility.VetFacilityService;
+import yong.petdoc.service.vetfacility.dto.RecentVetFacilityDto;
 import yong.petdoc.web.bookmark.dto.request.GetMyBookmarksRequest;
 import yong.petdoc.web.bookmark.dto.response.MyBookmarksResponse;
 import yong.petdoc.web.review.dto.request.GetMyReviewsRequest;
 import yong.petdoc.web.review.dto.response.MyReviewsResponse;
 import yong.petdoc.web.user.dto.request.CreateUserRequest;
+import yong.petdoc.web.vetfacility.dto.request.GetRecentVetFacilitiesRequest;
 
 import java.net.URI;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/users")
@@ -24,6 +28,7 @@ public class UserController {
     private final UserService userService;
     private final ReviewService reviewService;
     private final BookmarkService bookmarkService;
+    private final VetFacilityService vetFacilityService;
 
     @PostMapping
     public ResponseEntity<Void> createUser(
@@ -41,7 +46,7 @@ public class UserController {
     }
 
     @GetMapping("/me/reviews")
-    public ResponseEntity<MyReviewsResponse> getReviewsByUserId(
+    public ResponseEntity<MyReviewsResponse> getMyReviews(
             @RequestBody GetMyReviewsRequest request,
             Pageable pageable
     ) {
@@ -50,11 +55,19 @@ public class UserController {
     }
 
     @GetMapping("/me/bookmarks")
-    public ResponseEntity<MyBookmarksResponse> getBookmarksByUserId(
+    public ResponseEntity<MyBookmarksResponse> getMyBookmarks(
             @RequestBody GetMyBookmarksRequest request,
             Pageable pageable
     ) {
         return ResponseEntity
                 .ok(bookmarkService.getMyBookmarks(request, pageable));
+    }
+
+    @GetMapping("/me/recent-facilities")
+    public ResponseEntity<List<RecentVetFacilityDto>> getRecentVetFacilities(
+            @RequestBody GetRecentVetFacilitiesRequest request
+    ) {
+        return ResponseEntity
+                .ok(vetFacilityService.getRecentVetFacilities(request));
     }
 }
