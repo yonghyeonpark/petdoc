@@ -1,5 +1,5 @@
 <div align="center">
-<img src="https://github.com/user-attachments/assets/e131cb19-1280-4466-a44d-16839b35f85b" width="250">
+<img src="https://github.com/user-attachments/assets/bcaeb11c-dbf4-4fd0-852b-730ae484895d" width="250">
 
 # PetDoc
 
