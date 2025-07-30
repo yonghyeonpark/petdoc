@@ -1,80 +1,81 @@
 package yong.petdoc.service.review;
 
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import lombok.RequiredArgsConstructor;
 import yong.petdoc.domain.review.Review;
-import yong.petdoc.domain.review.ReviewRepository;
 import yong.petdoc.domain.user.User;
-import yong.petdoc.domain.user.UserRepository;
 import yong.petdoc.domain.vetfacility.VetFacility;
-import yong.petdoc.domain.vetfacility.VetFacilityRepository;
+import yong.petdoc.dto.request.review.CreateReviewRequest;
+import yong.petdoc.dto.request.review.DeleteReviewRequest;
+import yong.petdoc.dto.request.review.GetMyReviewsRequest;
+import yong.petdoc.dto.request.review.UpdateReviewRequest;
+import yong.petdoc.dto.response.review.MyReviewsResponse;
+import yong.petdoc.dto.response.review.ReviewResponse;
 import yong.petdoc.exception.CustomException;
 import yong.petdoc.exception.ErrorCode;
-import yong.petdoc.web.review.dto.request.CreateReviewRequest;
-import yong.petdoc.web.review.dto.request.DeleteReviewRequest;
-import yong.petdoc.web.review.dto.request.GetMyReviewsRequest;
-import yong.petdoc.web.review.dto.request.UpdateReviewRequest;
-import yong.petdoc.web.review.dto.response.MyReviewsResponse;
-import yong.petdoc.web.review.dto.response.ReviewResponse;
-
-import java.util.List;
+import yong.petdoc.repository.review.ReviewRepository;
+import yong.petdoc.repository.user.UserRepository;
+import yong.petdoc.repository.vetfacility.VetFacilityRepository;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
 public class ReviewService {
 
-    private final UserRepository userRepository;
-    private final VetFacilityRepository vetFacilityRepository;
-    private final ReviewRepository reviewRepository;
+	private final UserRepository userRepository;
+	private final VetFacilityRepository vetFacilityRepository;
+	private final ReviewRepository reviewRepository;
 
-    @Transactional
-    public void createReview(Long vetFacilityId, CreateReviewRequest request) {
-        User user = userRepository.findById(request.userId())
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        VetFacility vetFacility = vetFacilityRepository.findById(vetFacilityId)
-                .orElseThrow(() -> new CustomException(ErrorCode.VET_FACILITY_NOT_FOUND));
+	@Transactional
+	public void createReview(Long vetFacilityId, CreateReviewRequest request) {
+		User user = userRepository.findById(request.userId())
+			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		VetFacility vetFacility = vetFacilityRepository.findById(vetFacilityId)
+			.orElseThrow(() -> new CustomException(ErrorCode.VET_FACILITY_NOT_FOUND));
 
-        Review review = new Review(
-                request.comment(),
-                user,
-                vetFacility
-        );
-        reviewRepository.save(review);
-    }
+		Review review = new Review(
+			request.comment(),
+			user,
+			vetFacility
+		);
+		reviewRepository.save(review);
+	}
 
-    public List<ReviewResponse> getReviewsByVetFacilityId(Long vetFacilityId) {
-        return reviewRepository.findByVetFacilityId(vetFacilityId).stream()
-                .map(ReviewResponse::from)
-                .toList();
-    }
+	public List<ReviewResponse> getReviewsByVetFacilityId(Long vetFacilityId) {
+		return reviewRepository.findByVetFacilityId(vetFacilityId).stream()
+			.map(ReviewResponse::from)
+			.toList();
+	}
 
-    @Transactional
-    public void updateReview(Long vetFacilityId, UpdateReviewRequest request) {
-        Review review = reviewRepository.findByVetFacilityIdAndUserId(vetFacilityId, request.userId());
-        review.updateComment(request.comment());
-    }
+	@Transactional
+	public void updateReview(Long vetFacilityId, UpdateReviewRequest request) {
+		Review review = reviewRepository.findByVetFacilityIdAndUserId(vetFacilityId, request.userId());
+		review.updateComment(request.comment());
+	}
 
-    @Transactional
-    public void deleteReview(Long vetFacilityId, DeleteReviewRequest request) {
-        reviewRepository.deleteByVetFacilityIdAndUserId(vetFacilityId, request.userId());
-    }
+	@Transactional
+	public void deleteReview(Long vetFacilityId, DeleteReviewRequest request) {
+		reviewRepository.deleteByVetFacilityIdAndUserId(vetFacilityId, request.userId());
+	}
 
-    public MyReviewsResponse getMyReviews(GetMyReviewsRequest request, Pageable pageable) {
-        Page<Review> reviewPage = reviewRepository.findByUserId(request.userId(), pageable);
-        List<ReviewResponse> reviews = reviewPage.getContent().stream()
-                .map(ReviewResponse::from)
-                .toList();
-        return new MyReviewsResponse(
-                reviews,
-                reviewPage.getNumber(),
-                reviewPage.getSize(),
-                reviewPage.getTotalPages(),
-                reviewPage.getTotalElements(),
-                reviewPage.hasNext()
-        );
-    }
+	public MyReviewsResponse getMyReviews(GetMyReviewsRequest request, Pageable pageable) {
+		Page<Review> reviewPage = reviewRepository.findByUserId(request.userId(), pageable);
+		List<ReviewResponse> reviews = reviewPage.getContent().stream()
+			.map(ReviewResponse::from)
+			.toList();
+		return new MyReviewsResponse(
+			reviews,
+			reviewPage.getNumber(),
+			reviewPage.getSize(),
+			reviewPage.getTotalPages(),
+			reviewPage.getTotalElements(),
+			reviewPage.hasNext()
+		);
+	}
 }

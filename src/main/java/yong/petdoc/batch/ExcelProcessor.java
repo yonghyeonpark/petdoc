@@ -13,8 +13,8 @@ import lombok.RequiredArgsConstructor;
 import yong.petdoc.domain.vetfacility.Province;
 import yong.petdoc.domain.vetfacility.VetFacility;
 import yong.petdoc.domain.vetfacility.VetFacilityType;
+import yong.petdoc.external.kakao.dto.KakaoAddressResponse;
 import yong.petdoc.service.kakao.KakaoApiService;
-import yong.petdoc.service.kakao.dto.KakaoAddressResponse;
 
 @RequiredArgsConstructor
 public class ExcelProcessor implements ItemProcessor<Row, VetFacility> {
@@ -34,20 +34,15 @@ public class ExcelProcessor implements ItemProcessor<Row, VetFacility> {
 		// ex) 서울특별시 강남구 역삼동 => 서울특별시
 		Province province = Province.fromName(address.split(" ")[0]);
 
-		Point location = kakaoApiService.getCoordinateByAddress(address);
+		Point location = kakaoApiService.getPointByAddress(address);
 
 		// '키워드로 장소 검색' 카카오 API 요청에 대한 응답 페이지 조건에 따른 반복 설정
 		List<KakaoAddressResponse.Document> totalDocuments = new ArrayList<>();
 		boolean isEnd = false;
 		int page = 1;
 		while (!isEnd) {
-			// 주소로 검색한 좌표 값이 존재하지 않는 경우에는 동물 시설(병원 or 약국) 이름으로만 요청
-			KakaoAddressResponse addressResponse;
-			if (location == null) {
-				addressResponse = kakaoApiService.getAddressResponse(name, page);
-			} else {
-				addressResponse = kakaoApiService.getAddressResponse(name, location, page);
-			}
+			// 주소로 검색한 좌표 값의 존재 여부는 내부에서 검증 (null이라면 시설 이름으로만 요청)
+			KakaoAddressResponse addressResponse = kakaoApiService.getAddressByCondition(name, location, page);
 			totalDocuments.addAll(addressResponse.getDocuments());
 
 			KakaoAddressResponse.Meta meta = addressResponse.getMeta();
