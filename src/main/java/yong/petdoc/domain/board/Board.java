@@ -44,4 +44,8 @@ public class Board extends BaseTimeEntity {
 	public void incrementViews() {
 		views.incrementAndGet();
 	}
+
+	public int getViews() {
+		return views.get();
+	}
 }
