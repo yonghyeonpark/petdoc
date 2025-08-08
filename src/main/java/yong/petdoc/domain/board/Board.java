@@ -1,7 +1,5 @@
 package yong.petdoc.domain.board;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -25,7 +23,7 @@ public class Board extends BaseTimeEntity {
 
 	private String title;
 	private String content;
-	private AtomicInteger views;
+	private Integer views;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private User user;
@@ -38,14 +36,10 @@ public class Board extends BaseTimeEntity {
 		this.title = title;
 		this.content = content;
 		this.user = user;
-		this.views = new AtomicInteger(0);
+		this.views = 0;
 	}
 
 	public void incrementViews() {
-		views.incrementAndGet();
-	}
-
-	public int getViews() {
-		return views.get();
+		views++;
 	}
 }
