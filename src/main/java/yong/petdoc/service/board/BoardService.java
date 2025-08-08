@@ -8,6 +8,8 @@ import yong.petdoc.domain.board.Board;
 import yong.petdoc.domain.user.User;
 import yong.petdoc.dto.request.board.CreateBoardRequest;
 import yong.petdoc.dto.response.board.BoardDetailResponse;
+import yong.petdoc.exception.CustomException;
+import yong.petdoc.exception.ErrorCode;
 import yong.petdoc.repository.board.BoardRepository;
 import yong.petdoc.repository.user.UserRepository;
 
@@ -21,15 +23,18 @@ public class BoardService {
 	@Transactional
 	public void createBoard(CreateBoardRequest request) {
 		User writer = userRepository.findById(request.writerId())
-			.orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
+			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 		Board board = request.toEntity(writer);
 		boardRepository.save(board);
 	}
 
-	@Transactional(readOnly = true)
+	@Transactional
 	public BoardDetailResponse getBoard(Long boardId) {
 		Board board = boardRepository.findById(boardId)
-			.orElseThrow(() -> new RuntimeException("존재하지 않는 게시판입니다."));
+			.orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
+
+		board.incrementViews();
+
 		return BoardDetailResponse.from(board);
 	}
 }
