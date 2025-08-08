@@ -1,5 +1,7 @@
 package yong.petdoc.controller.board;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,5 +34,11 @@ public class BoardController {
 	public ResponseEntity<BoardDetailResponse> getBoard(@PathVariable Long boardId) {
 		return ResponseEntity
 			.ok(boardService.getBoard(boardId));
+	}
+
+	@GetMapping
+	public ResponseEntity<Page<BoardDetailResponse>> getBoards(Pageable pageable) {
+		return ResponseEntity
+			.ok(boardService.getBoards(pageable));
 	}
 }

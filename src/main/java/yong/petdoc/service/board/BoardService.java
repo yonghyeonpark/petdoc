@@ -1,5 +1,7 @@
 package yong.petdoc.service.board;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,5 +38,11 @@ public class BoardService {
 		board.incrementViews();
 
 		return BoardDetailResponse.from(board);
+	}
+
+	@Transactional(readOnly = true)
+	public Page<BoardDetailResponse> getBoards(Pageable pageable) {
+		return boardRepository.findAll(pageable)
+			.map(BoardDetailResponse::from);
 	}
 }
