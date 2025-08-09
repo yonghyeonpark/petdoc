@@ -1,5 +1,7 @@
 package yong.petdoc.controller.vetfacility;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,6 +20,8 @@ import yong.petdoc.dto.request.review.CreateReviewRequest;
 import yong.petdoc.dto.request.review.DeleteReviewRequest;
 import yong.petdoc.dto.request.review.UpdateReviewRequest;
 import yong.petdoc.dto.request.vetfacility.GetVetFacilityRequest;
+import yong.petdoc.dto.request.vetfacility.VetFacilityListRequest;
+import yong.petdoc.dto.response.vetfacility.VetFacilityListResponse;
 import yong.petdoc.dto.response.vetfacility.VetFacilityResponse;
 import yong.petdoc.service.bookmark.BookmarkService;
 import yong.petdoc.service.review.ReviewService;
@@ -40,6 +44,13 @@ public class VetFacilityController {
 		return ResponseEntity
 			.ok()
 			.body(vetFacilityService.getVetFacilityById(facilityId, request));
+	}
+
+	@GetMapping
+	public ResponseEntity<List<VetFacilityListResponse>> getVetFacilities(VetFacilityListRequest request) {
+		return ResponseEntity
+			.ok()
+			.body(vetFacilityService.getVetFacilities(request));
 	}
 
 	@PostMapping("/{facilityId}/reviews")

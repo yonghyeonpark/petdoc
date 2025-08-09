@@ -13,9 +13,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 import yong.petdoc.domain.vetfacility.VetFacility;
+import yong.petdoc.domain.vetfacility.VetFacilityType;
 import yong.petdoc.dto.request.vetfacility.GetRecentVetFacilitiesRequest;
 import yong.petdoc.dto.request.vetfacility.GetVetFacilityRequest;
+import yong.petdoc.dto.request.vetfacility.VetFacilityListRequest;
 import yong.petdoc.dto.response.vetfacility.RecentVetFacilityDto;
+import yong.petdoc.dto.response.vetfacility.VetFacilityListResponse;
 import yong.petdoc.dto.response.vetfacility.VetFacilityResponse;
 import yong.petdoc.exception.CustomException;
 import yong.petdoc.repository.vetfacility.VetFacilityRepository;
@@ -62,6 +65,17 @@ public class VetFacilityService {
 			reviewService.getReviewsByVetFacilityId(facilityId),
 			bookmarkService.isBookmarked(facilityId, userId)
 		);
+	}
+
+	public List<VetFacilityListResponse> getVetFacilities(VetFacilityListRequest request) {
+		return vetFacilityRepository.findVetFacilities(
+				request.latitude(),
+				request.longitude(),
+				request.radius(),
+				VetFacilityType.fromName(request.type())
+			).stream()
+			.map(VetFacilityListResponse::from)
+			.toList();
 	}
 
 	public List<RecentVetFacilityDto> getRecentVetFacilities(GetRecentVetFacilitiesRequest request) {
