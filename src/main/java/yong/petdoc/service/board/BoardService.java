@@ -10,6 +10,7 @@ import yong.petdoc.domain.board.Board;
 import yong.petdoc.domain.user.User;
 import yong.petdoc.dto.request.board.CreateBoardRequest;
 import yong.petdoc.dto.response.board.BoardDetailResponse;
+import yong.petdoc.dto.response.page.PageResponse;
 import yong.petdoc.exception.CustomException;
 import yong.petdoc.exception.ErrorCode;
 import yong.petdoc.repository.board.BoardRepository;
@@ -41,8 +42,9 @@ public class BoardService {
 	}
 
 	@Transactional(readOnly = true)
-	public Page<BoardDetailResponse> getBoards(Pageable pageable) {
-		return boardRepository.findAll(pageable)
+	public PageResponse<BoardDetailResponse> getBoards(Pageable pageable) {
+		Page<BoardDetailResponse> boards = boardRepository.findAll(pageable)
 			.map(BoardDetailResponse::from);
+		return PageResponse.of(boards);
 	}
 }
