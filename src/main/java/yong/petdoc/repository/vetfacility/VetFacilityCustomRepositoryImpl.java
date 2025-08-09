@@ -3,7 +3,6 @@ package yong.petdoc.repository.vetfacility;
 import static com.querydsl.core.types.dsl.Expressions.*;
 import static yong.petdoc.domain.vetfacility.QVetFacility.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -21,12 +20,11 @@ public class VetFacilityCustomRepositoryImpl implements VetFacilityCustomReposit
 
 	@Override
 	public List<VetFacility> findVetFacilities(
-		BigDecimal latitude,
-		BigDecimal longitude,
+		Double latitude,
+		Double longitude,
 		Integer radius,
 		VetFacilityType type
 	) {
-		System.out.println(latitude + " " + longitude + " " + radius);
 		return queryFactory.selectFrom(vetFacility)
 			.where(
 				calculateHaversineDistance(latitude, longitude).loe(radius)
@@ -42,7 +40,7 @@ public class VetFacilityCustomRepositoryImpl implements VetFacilityCustomReposit
 		return vetFacility.vetFacilityType.eq(type);
 	}
 
-	private NumberExpression<Double> calculateHaversineDistance(BigDecimal latitude, BigDecimal longitude) {
+	private NumberExpression<Double> calculateHaversineDistance(Double latitude, Double longitude) {
 		return numberTemplate(
 			Double.class,
 			"ST_Distance_Sphere(Point({0}, {1}), Point(ST_X({2}), ST_Y({2})))",
