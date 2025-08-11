@@ -8,9 +8,10 @@ import yong.petdoc.domain.vetfacility.VetFacilityType;
 public interface VetFacilityCustomRepository {
 
 	List<VetFacility> findVetFacilities(
-		Double latitude,
-		Double longitude,
-		Integer radius,
+		Double minLatitude,
+		Double maxLatitude,
+		Double minLongitude,
+		Double maxLongitude,
 		VetFacilityType type
 	);
 }

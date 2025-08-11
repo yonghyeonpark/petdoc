@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import yong.petdoc.domain.vetfacility.VetFacility;
 import yong.petdoc.domain.vetfacility.VetFacilityType;
 import yong.petdoc.dto.request.vetfacility.GetRecentVetFacilitiesRequest;
-import yong.petdoc.dto.request.vetfacility.GetVetFacilityRequest;
 import yong.petdoc.dto.request.vetfacility.VetFacilityListRequest;
 import yong.petdoc.dto.response.vetfacility.RecentVetFacilityDto;
 import yong.petdoc.dto.response.vetfacility.VetFacilityListResponse;
@@ -37,13 +36,11 @@ public class VetFacilityService {
 	private final BookmarkService bookmarkService;
 	private final ObjectMapper objectMapper;
 
-	public VetFacilityResponse getVetFacilityById(Long facilityId, GetVetFacilityRequest request) {
-		Long userId = request.userId();
+	public VetFacilityResponse getVetFacilityById(Long facilityId) {
 		VetFacility vetFacility = vetFacilityRepository.findById(facilityId)
 			.orElseThrow(() -> new CustomException(VET_FACILITY_NOT_FOUND));
-		Long bookmarkCount = redisService.getSizeOfSet(VET_FACILITY_BOOKMARK_PREFIX + facilityId);
 
-		// 수의 시설 정보를 JSON으로 직렬화 후 최근 조회 목록에 저장
+		/*// 수의 시설 정보를 JSON으로 직렬화 후 최근 조회 목록에 저장
 		String facilityJson;
 		try {
 			facilityJson = objectMapper.writeValueAsString(
@@ -57,21 +54,22 @@ public class VetFacilityService {
 		} catch (JsonProcessingException e) {
 			throw new CustomException(JSON_SERIALIZATION_FAILED, e);
 		}
-		redisService.addRecentFacility(VET_FACILITY_RECENT_BY_USER_PREFIX + userId, facilityJson);
+		redisService.addRecentFacility(VET_FACILITY_RECENT_BY_USER_PREFIX + userId, facilityJson);*/
 
 		return VetFacilityResponse.from(
 			vetFacility,
-			bookmarkCount,
+			0, // bookmarkCount
 			reviewService.getReviewsByVetFacilityId(facilityId),
-			bookmarkService.isBookmarked(facilityId, userId)
+			false // bookmarkService.isBookmarked(facilityId, userId)
 		);
 	}
 
 	public List<VetFacilityListResponse> getVetFacilities(VetFacilityListRequest request) {
 		return vetFacilityRepository.findVetFacilities(
-				request.latitude(),
-				request.longitude(),
-				request.radius(),
+				request.minLatitude(),
+				request.maxLatitude(),
+				request.minLongitude(),
+				request.maxLongitude(),
 				VetFacilityType.fromName(request.type())
 			).stream()
 			.map(VetFacilityListResponse::from)

@@ -6,7 +6,6 @@ import static yong.petdoc.domain.vetfacility.QVetFacility.*;
 import java.util.List;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -20,15 +19,17 @@ public class VetFacilityCustomRepositoryImpl implements VetFacilityCustomReposit
 
 	@Override
 	public List<VetFacility> findVetFacilities(
-		Double latitude,
-		Double longitude,
-		Integer radius,
+		Double minLatitude,
+		Double maxLatitude,
+		Double minLongitude,
+		Double maxLongitude,
 		VetFacilityType type
 	) {
 		return queryFactory.selectFrom(vetFacility)
 			.where(
-				calculateHaversineDistance(latitude, longitude).loe(radius)
-					.and(buildType(type))
+				numberTemplate(Double.class, "ST_Y({0})", vetFacility.location).between(minLatitude, maxLatitude),
+				numberTemplate(Double.class, "ST_X({0})", vetFacility.location).between(minLongitude, maxLongitude),
+				buildType(type)
 			)
 			.fetch();
 	}
@@ -38,15 +39,5 @@ public class VetFacilityCustomRepositoryImpl implements VetFacilityCustomReposit
 			return null;
 		}
 		return vetFacility.vetFacilityType.eq(type);
-	}
-
-	private NumberExpression<Double> calculateHaversineDistance(Double latitude, Double longitude) {
-		return numberTemplate(
-			Double.class,
-			"ST_Distance_Sphere(Point({0}, {1}), Point(ST_X({2}), ST_Y({2})))",
-			longitude,
-			latitude,
-			vetFacility.location
-		).divide(1000.0); // km로 변환
 	}
 }
