@@ -19,7 +19,6 @@ import yong.petdoc.dto.request.bookmark.DeleteBookmarkRequest;
 import yong.petdoc.dto.request.review.CreateReviewRequest;
 import yong.petdoc.dto.request.review.DeleteReviewRequest;
 import yong.petdoc.dto.request.review.UpdateReviewRequest;
-import yong.petdoc.dto.request.vetfacility.GetVetFacilityRequest;
 import yong.petdoc.dto.request.vetfacility.VetFacilityListRequest;
 import yong.petdoc.dto.response.vetfacility.VetFacilityListResponse;
 import yong.petdoc.dto.response.vetfacility.VetFacilityResponse;
@@ -37,13 +36,10 @@ public class VetFacilityController {
 	private final BookmarkService bookmarkService;
 
 	@GetMapping("/{facilityId}")
-	public ResponseEntity<VetFacilityResponse> getVetFacilityById(
-		@PathVariable Long facilityId,
-		@RequestBody GetVetFacilityRequest request
-	) {
+	public ResponseEntity<VetFacilityResponse> getVetFacilityById(@PathVariable Long facilityId) {
 		return ResponseEntity
 			.ok()
-			.body(vetFacilityService.getVetFacilityById(facilityId, request));
+			.body(vetFacilityService.getVetFacilityById(facilityId));
 	}
 
 	@GetMapping
