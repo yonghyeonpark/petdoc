@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import yong.petdoc.dto.request.board.BoardSearchRequest;
 import yong.petdoc.dto.request.board.CreateBoardRequest;
 import yong.petdoc.dto.response.board.BoardDetailResponse;
+import yong.petdoc.dto.response.board.BoardListResponse;
 import yong.petdoc.dto.response.page.PageResponse;
 import yong.petdoc.service.board.BoardService;
 
@@ -40,7 +41,7 @@ public class BoardController {
 	}
 
 	@GetMapping
-	public ResponseEntity<PageResponse<BoardDetailResponse>> getBoards(
+	public ResponseEntity<PageResponse<BoardListResponse>> getBoards(
 		@PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
 	) {
 		return ResponseEntity
@@ -48,7 +49,7 @@ public class BoardController {
 	}
 
 	@GetMapping("/search")
-	public ResponseEntity<PageResponse<BoardDetailResponse>> getBoards(
+	public ResponseEntity<PageResponse<BoardListResponse>> getBoards(
 		@PageableDefault(page = 0, size = 10, sort = "createdAt") Pageable pageable,
 		BoardSearchRequest request
 	) {

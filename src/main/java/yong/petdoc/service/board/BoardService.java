@@ -11,6 +11,7 @@ import yong.petdoc.domain.user.User;
 import yong.petdoc.dto.request.board.BoardSearchRequest;
 import yong.petdoc.dto.request.board.CreateBoardRequest;
 import yong.petdoc.dto.response.board.BoardDetailResponse;
+import yong.petdoc.dto.response.board.BoardListResponse;
 import yong.petdoc.dto.response.page.PageResponse;
 import yong.petdoc.exception.CustomException;
 import yong.petdoc.exception.ErrorCode;
@@ -43,18 +44,18 @@ public class BoardService {
 		return BoardDetailResponse.from(board);
 	}
 
-	public PageResponse<BoardDetailResponse> getBoards(Pageable pageable) {
-		Page<BoardDetailResponse> boards = boardRepository.findAll(pageable)
-			.map(BoardDetailResponse::from);
+	public PageResponse<BoardListResponse> getBoards(Pageable pageable) {
+		Page<BoardListResponse> boards = boardRepository.findAll(pageable)
+			.map(BoardListResponse::from);
 		return PageResponse.of(boards);
 	}
 
-	public PageResponse<BoardDetailResponse> getBoards(Pageable pageable, BoardSearchRequest request) {
-		Page<BoardDetailResponse> boards = boardRepository.findBoardsBySearchCondition(
+	public PageResponse<BoardListResponse> getBoards(Pageable pageable, BoardSearchRequest request) {
+		Page<BoardListResponse> boards = boardRepository.findBoardsBySearchCondition(
 			pageable,
 			request.searchType(),
 			request.keyword()
-		).map(BoardDetailResponse::from);
+		).map(BoardListResponse::from);
 		return PageResponse.of(boards);
 	}
 }
