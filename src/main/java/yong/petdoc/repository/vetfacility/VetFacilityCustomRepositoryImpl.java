@@ -1,11 +1,11 @@
 package yong.petdoc.repository.vetfacility;
 
-import static com.querydsl.core.types.dsl.Expressions.*;
 import static yong.petdoc.domain.vetfacility.QVetFacility.*;
 
 import java.util.List;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -25,10 +25,22 @@ public class VetFacilityCustomRepositoryImpl implements VetFacilityCustomReposit
 		Double maxLongitude,
 		VetFacilityType type
 	) {
-		return queryFactory.selectFrom(vetFacility)
+		String polygonWKT = String.format(
+			"POLYGON((%f %f, %f %f, %f %f, %f %f, %f %f))",
+			minLatitude, minLongitude,
+			minLatitude, maxLongitude,
+			maxLatitude, maxLongitude,
+			maxLatitude, minLongitude,
+			minLatitude, minLongitude
+		);
+		return queryFactory
+			.selectFrom(vetFacility)
 			.where(
-				numberTemplate(Double.class, "ST_Y({0})", vetFacility.location).between(minLatitude, maxLatitude),
-				numberTemplate(Double.class, "ST_X({0})", vetFacility.location).between(minLongitude, maxLongitude),
+				Expressions.booleanTemplate(
+					"ST_Contains(ST_GeomFromText({0}, 4326), {1})",
+					polygonWKT,
+					vetFacility.location
+				),
 				buildType(type)
 			)
 			.fetch();
