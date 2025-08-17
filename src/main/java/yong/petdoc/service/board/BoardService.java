@@ -26,6 +26,8 @@ public class BoardService {
 	private final BoardRepository boardRepository;
 	private final UserRepository userRepository;
 
+	private final BoardAsyncService boardAsyncService;
+
 	@Transactional
 	public void createBoard(CreateBoardRequest request) {
 		User writer = userRepository.findById(request.writerId())
@@ -34,12 +36,11 @@ public class BoardService {
 		boardRepository.save(board);
 	}
 
-	@Transactional
 	public BoardDetailResponse getBoard(Long boardId) {
 		Board board = boardRepository.findById(boardId)
 			.orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
 
-		board.incrementViews();
+		boardAsyncService.increaseViews(boardId);
 
 		return BoardDetailResponse.from(board);
 	}
