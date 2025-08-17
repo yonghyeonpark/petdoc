@@ -1,5 +1,7 @@
 package yong.petdoc.dto.response.board;
 
+import java.time.LocalDateTime;
+
 import yong.petdoc.domain.board.Board;
 import yong.petdoc.domain.user.User;
 
@@ -8,6 +10,7 @@ public record BoardListResponse(
 	String writerNickname,
 	Long boardId,
 	String title,
+	LocalDateTime createdAt,
 	Integer views
 ) {
 
@@ -18,6 +21,7 @@ public record BoardListResponse(
 			writer.getNickname(),
 			board.getId(),
 			board.getTitle(),
+			board.getCreatedAt(),
 			board.getViews()
 		);
 	}
