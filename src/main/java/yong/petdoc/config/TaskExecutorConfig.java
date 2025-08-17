@@ -3,22 +3,32 @@ package yong.petdoc.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskExecutor;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-import java.util.concurrent.ThreadPoolExecutor;
-
+@EnableAsync
 @Configuration
 public class TaskExecutorConfig {
 
-    @Bean
-    public TaskExecutor batchTaskExecutor() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(12);
-        executor.setMaxPoolSize(50);
-        executor.setQueueCapacity(0);
-        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
-        executor.setThreadNamePrefix("taskExecutor-");
-        executor.initialize();
-        return executor;
-    }
+	@Bean
+	public TaskExecutor batchTaskExecutor() {
+		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+		executor.setCorePoolSize(20);
+		executor.setMaxPoolSize(100);
+		executor.setQueueCapacity(0);
+		executor.setThreadNamePrefix("batchExecutor-");
+		executor.initialize();
+		return executor;
+	}
+
+	@Bean(name = "taskExecutor")
+	public TaskExecutor asyncTaskExecutor() {
+		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+		executor.setCorePoolSize(10);
+		executor.setMaxPoolSize(20);
+		executor.setQueueCapacity(0);
+		executor.setThreadNamePrefix("asyncExecutor-");
+		executor.initialize();
+		return executor;
+	}
 }
