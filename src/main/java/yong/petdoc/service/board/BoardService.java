@@ -71,8 +71,8 @@ public class BoardService {
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		BoardLike boardLike = new BoardLike(board, user);
-
-		board.incrementLikes();
 		boardLikeRepository.save(boardLike);
+
+		boardAsyncService.increaseLikes(boardId);
 	}
 }

@@ -24,4 +24,13 @@ public class BoardAsyncService {
 
 		board.incrementViews();
 	}
+
+	@Async
+	@Transactional
+	public void increaseLikes(Long boardId) {
+		Board board = boardRepository.findById(boardId)
+			.orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
+
+		board.incrementLikes();
+	}
 }
