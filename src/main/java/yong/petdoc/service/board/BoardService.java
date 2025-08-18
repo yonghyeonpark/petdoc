@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import yong.petdoc.domain.board.Board;
+import yong.petdoc.domain.boardlike.BoardLike;
 import yong.petdoc.domain.user.User;
 import yong.petdoc.dto.request.board.BoardSearchRequest;
 import yong.petdoc.dto.request.board.CreateBoardRequest;
@@ -16,6 +17,7 @@ import yong.petdoc.dto.response.page.PageResponse;
 import yong.petdoc.exception.CustomException;
 import yong.petdoc.exception.ErrorCode;
 import yong.petdoc.repository.board.BoardRepository;
+import yong.petdoc.repository.boardlike.BoardLikeRepository;
 import yong.petdoc.repository.user.UserRepository;
 
 @RequiredArgsConstructor
@@ -25,6 +27,7 @@ public class BoardService {
 
 	private final BoardRepository boardRepository;
 	private final UserRepository userRepository;
+	private final BoardLikeRepository boardLikeRepository;
 
 	private final BoardAsyncService boardAsyncService;
 
@@ -58,5 +61,18 @@ public class BoardService {
 			request.keyword()
 		).map(BoardListResponse::from);
 		return PageResponse.of(boards);
+	}
+
+	@Transactional
+	public void likeBoard(Long boardId, Long userId) {
+		Board board = boardRepository.findById(boardId)
+			.orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+		BoardLike boardLike = new BoardLike(board, user);
+
+		board.incrementLikes();
+		boardLikeRepository.save(boardLike);
 	}
 }

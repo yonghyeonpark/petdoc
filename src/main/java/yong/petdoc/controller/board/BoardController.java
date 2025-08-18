@@ -56,4 +56,12 @@ public class BoardController {
 		return ResponseEntity
 			.ok(boardService.getBoards(pageable, request));
 	}
+
+	@PostMapping("/{boardId}{userId}")
+	public ResponseEntity<Void> likeBoard(@PathVariable Long boardId, @PathVariable Long userId) {
+		boardService.likeBoard(boardId, userId);
+		return ResponseEntity
+			.ok()
+			.build();
+	}
 }
