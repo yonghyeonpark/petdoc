@@ -12,7 +12,8 @@ public record BoardDetailResponse(
 	String title,
 	String content,
 	LocalDateTime createdAt,
-	Integer views
+	Integer views,
+	Integer likes
 ) {
 
 	public static BoardDetailResponse from(Board board) {
@@ -24,7 +25,8 @@ public record BoardDetailResponse(
 			board.getTitle(),
 			board.getContent(),
 			board.getCreatedAt(),
-			board.getViews()
+			board.getViews(),
+			board.getLikes()
 		);
 	}
 }

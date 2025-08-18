@@ -11,7 +11,8 @@ public record BoardListResponse(
 	Long boardId,
 	String title,
 	LocalDateTime createdAt,
-	Integer views
+	Integer views,
+	Integer likes
 ) {
 
 	public static BoardListResponse from(Board board) {
@@ -22,7 +23,8 @@ public record BoardListResponse(
 			board.getId(),
 			board.getTitle(),
 			board.getCreatedAt(),
-			board.getViews()
+			board.getViews(),
+			board.getLikes()
 		);
 	}
 }
