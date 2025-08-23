@@ -1,6 +1,6 @@
-package yong.petdoc.repository.board;
+package yong.petdoc.repository.post;
 
-import static yong.petdoc.domain.board.QBoard.*;
+import static yong.petdoc.domain.post.QPost.*;
 
 import java.util.List;
 
@@ -13,30 +13,30 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
-import yong.petdoc.domain.board.Board;
+import yong.petdoc.domain.post.Post;
 
 @RequiredArgsConstructor
-public class BoardCustomRepositoryImpl implements BoardCustomRepository {
+public class PostCustomRepositoryImpl implements PostCustomRepository {
 
 	private final JPAQueryFactory queryFactory;
 
 	@Override
-	public Page<Board> findBoardsBySearchCondition(Pageable pageable, String searchType, String keyword) {
-		List<Board> boards = queryFactory
-			.selectFrom(board)
-			.leftJoin(board.user).fetchJoin()
+	public Page<Post> findPostsBySearchCondition(Pageable pageable, String searchType, String keyword) {
+		List<Post> posts = queryFactory
+			.selectFrom(post)
+			.leftJoin(post.user).fetchJoin()
 			.where(buildSearchCondition(searchType, keyword))
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
-			.orderBy(board.createdAt.desc())
+			.orderBy(post.createdAt.desc())
 			.fetch();
 
 		JPAQuery<Long> countQuery = queryFactory
-			.select(board.count())
-			.from(board)
+			.select(post.count())
+			.from(post)
 			.where(buildSearchCondition(searchType, keyword));
 
-		return PageableExecutionUtils.getPage(boards, pageable, countQuery::fetchOne);
+		return PageableExecutionUtils.getPage(posts, pageable, countQuery::fetchOne);
 	}
 
 	private BooleanExpression buildSearchCondition(String searchType, String keyword) {
@@ -45,11 +45,11 @@ public class BoardCustomRepositoryImpl implements BoardCustomRepository {
 		}
 
 		return switch (searchType) {
-			case "title" -> board.title.contains(keyword);
-			case "content" -> board.content.contains(keyword);
-			case "writer" -> board.user.nickname.contains(keyword);
-			case "titleContent" -> board.title.contains(keyword)
-				.or(board.content.contains(keyword));
+			case "title" -> post.title.contains(keyword);
+			case "content" -> post.content.contains(keyword);
+			case "writer" -> post.user.nickname.contains(keyword);
+			case "titleContent" -> post.title.contains(keyword)
+				.or(post.content.contains(keyword));
 			default -> null;
 		};
 	}

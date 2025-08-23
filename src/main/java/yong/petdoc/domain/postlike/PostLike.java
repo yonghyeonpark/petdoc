@@ -1,7 +1,6 @@
-package yong.petdoc.domain.board;
+package yong.petdoc.domain.postlike;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -10,42 +9,26 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import yong.petdoc.domain.BaseTimeEntity;
+import yong.petdoc.domain.post.Post;
 import yong.petdoc.domain.user.User;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Board extends BaseTimeEntity {
+public class PostLike extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	private String title;
-	private String content;
-	private Integer views;
-	private Integer likes;
+	@ManyToOne
+	private Post post;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	private User user;
 
-	public Board(
-		String title,
-		String content,
-		User user
-	) {
-		this.title = title;
-		this.content = content;
+	public PostLike(Post post, User user) {
+		this.post = post;
 		this.user = user;
-		this.views = 0;
-		this.likes = 0;
-	}
-
-	public void incrementViews() {
-		views++;
-	}
-
-	public void incrementLikes() {
-		likes++;
 	}
 }

@@ -1,4 +1,4 @@
-package yong.petdoc.controller.board;
+package yong.petdoc.controller.post;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -12,54 +12,54 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
-import yong.petdoc.dto.request.board.BoardSearchRequest;
-import yong.petdoc.dto.request.board.CreateBoardRequest;
-import yong.petdoc.dto.response.board.BoardDetailResponse;
-import yong.petdoc.dto.response.board.BoardListResponse;
+import yong.petdoc.dto.request.post.PostCreateRequest;
+import yong.petdoc.dto.request.post.PostSearchRequest;
 import yong.petdoc.dto.response.page.PageResponse;
-import yong.petdoc.service.board.BoardService;
+import yong.petdoc.dto.response.post.PostDetailResponse;
+import yong.petdoc.dto.response.post.PostListResponse;
+import yong.petdoc.service.post.PostService;
 
 @RequiredArgsConstructor
-@RequestMapping("/api/boards")
+@RequestMapping("/api/posts")
 @RestController
-public class BoardController {
+public class PostController {
 
-	private final BoardService boardService;
+	private final PostService postService;
 
 	@PostMapping
-	public ResponseEntity<Void> createBoard(@RequestBody CreateBoardRequest request) {
-		boardService.createBoard(request);
+	public ResponseEntity<Void> createPost(@RequestBody PostCreateRequest request) {
+		postService.createPost(request);
 		return ResponseEntity
 			.ok()
 			.build();
 	}
 
-	@GetMapping("/{boardId}")
-	public ResponseEntity<BoardDetailResponse> getBoard(@PathVariable Long boardId) {
+	@GetMapping("/{postId}")
+	public ResponseEntity<PostDetailResponse> getPost(@PathVariable Long postId) {
 		return ResponseEntity
-			.ok(boardService.getBoard(boardId));
+			.ok(postService.getPost(postId));
 	}
 
 	@GetMapping
-	public ResponseEntity<PageResponse<BoardListResponse>> getBoards(
+	public ResponseEntity<PageResponse<PostListResponse>> getPosts(
 		@PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
 	) {
 		return ResponseEntity
-			.ok(boardService.getBoards(pageable));
+			.ok(postService.getPosts(pageable));
 	}
 
 	@GetMapping("/search")
-	public ResponseEntity<PageResponse<BoardListResponse>> getBoards(
+	public ResponseEntity<PageResponse<PostListResponse>> getPosts(
 		@PageableDefault(page = 0, size = 10, sort = "createdAt") Pageable pageable,
-		BoardSearchRequest request
+		PostSearchRequest request
 	) {
 		return ResponseEntity
-			.ok(boardService.getBoards(pageable, request));
+			.ok(postService.getPosts(pageable, request));
 	}
 
-	@PostMapping("/{boardId}/{userId}")
-	public ResponseEntity<Void> likeBoard(@PathVariable Long boardId, @PathVariable Long userId) {
-		boardService.likeBoard(boardId, userId);
+	@PostMapping("/{postId}/{userId}")
+	public ResponseEntity<Void> likePost(@PathVariable Long postId, @PathVariable Long userId) {
+		postService.likePost(postId, userId);
 		return ResponseEntity
 			.ok()
 			.build();
