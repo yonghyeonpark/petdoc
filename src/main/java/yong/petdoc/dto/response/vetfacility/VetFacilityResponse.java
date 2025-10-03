@@ -19,7 +19,6 @@ public record VetFacilityResponse(
 
 	public static VetFacilityResponse from(
 		VetFacility vetFacility,
-		long bookmarkCount,
 		List<ReviewResponse> reviews,
 		boolean isBookmarked
 	) {
@@ -30,7 +29,7 @@ public record VetFacilityResponse(
 			vetFacility.getRoadAddress(),
 			vetFacility.getPhoneNumber(),
 			vetFacility.getPlaceUrl(),
-			bookmarkCount,
+			vetFacility.getBookmarkCount(),
 			reviews,
 			isBookmarked
 		);

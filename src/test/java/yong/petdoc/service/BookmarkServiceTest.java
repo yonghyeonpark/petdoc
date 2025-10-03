@@ -17,14 +17,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.SetOperations;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import yong.petdoc.constant.redis.RedisKey;
 import yong.petdoc.domain.bookmark.Bookmark;
 import yong.petdoc.dto.request.bookmark.CreateBookmarkRequest;
 import yong.petdoc.dto.request.bookmark.DeleteBookmarkRequest;
@@ -45,38 +41,23 @@ public class BookmarkServiceTest {
 	@Autowired
 	private BookmarkRepository bookmarkRepository;
 
-	@Autowired
-	private RedisTemplate<String, String> stringRedisTemplate;
-
-	@AfterEach
-	void clearRedis() {
-		try (RedisConnection connection = stringRedisTemplate.getConnectionFactory().getConnection()) {
-			connection.serverCommands().flushDb();
-		}
-	}
-
 	@AfterEach
 	void tearDown() {
 		bookmarkRepository.deleteAllInBatch();
 	}
 
-	@DisplayName("즐겨찾기 생성 시 Redis에는 수의 시설에 대한 사용자 ID가, RDB에는 엔티티가 저장된다.")
+	@DisplayName("즐겨찾기 생성 시 데이터가 저장된다.")
 	@Test
 	void createBookmark() {
 		// given
 		Long userId = 1L;
 		Long vetFacilityId = 1L;
 		CreateBookmarkRequest request = new CreateBookmarkRequest(userId);
-		String key = RedisKey.VET_FACILITY_BOOKMARK_PREFIX + vetFacilityId;
-		SetOperations<String, String> ops = stringRedisTemplate.opsForSet();
 
 		// when
 		bookmarkService.createBookmark(vetFacilityId, request);
 
 		// then
-		assertThat(ops.isMember(key, String.valueOf(userId))).isTrue();
-		assertThat(ops.size(key)).isEqualTo(1);
-
 		Bookmark bookmark = bookmarkRepository.findAll().get(0);
 		assertThat(bookmark.getUser().getId()).isEqualTo(userId);
 		assertThat(bookmark.getVetFacility().getId()).isEqualTo(vetFacilityId);
@@ -88,50 +69,13 @@ public class BookmarkServiceTest {
 		// given
 		Long userId = 1L;
 		Long vetFacilityId = 1L;
-		String key = RedisKey.VET_FACILITY_BOOKMARK_PREFIX + vetFacilityId;
-
-		stringRedisTemplate.opsForSet().add(key, String.valueOf(userId));
-
 		CreateBookmarkRequest request = new CreateBookmarkRequest(userId);
+		bookmarkService.createBookmark(vetFacilityId, request);
 
 		// when // then
 		assertThatThrownBy(() -> bookmarkService.createBookmark(vetFacilityId, request))
 			.isInstanceOf(CustomException.class)
 			.hasMessage(DUPLICATE_BOOKMARK.getMessage());
-	}
-
-	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-	@DisplayName("여러 유저가 동시에 즐겨찾기를 요청해도 중복 없이 모두 정상 저장된다.")
-	@Test
-	void createBookmark_concurrentWithMultipleUsers() throws InterruptedException {
-		//given // when
-		Long vetFacilityId = 1L;
-		int threadCount = 30;
-		String key = RedisKey.VET_FACILITY_BOOKMARK_PREFIX + vetFacilityId;
-		ExecutorService executorService = Executors.newFixedThreadPool(10);
-		CountDownLatch latch = new CountDownLatch(threadCount);
-
-		for (int i = 1; i <= threadCount + 30; i++) {
-			Long userId = (long)i;
-			executorService.submit(() -> {
-				try {
-					CreateBookmarkRequest request = new CreateBookmarkRequest(userId);
-					bookmarkService.createBookmark(vetFacilityId, request);
-				} catch (Exception ignored) {
-				} finally {
-					latch.countDown();
-				}
-			});
-		}
-		latch.await();
-
-		// then
-		Awaitility.await()
-			.atMost(Duration.ofSeconds(1))
-			.untilAsserted(() -> {
-				assertThat(stringRedisTemplate.opsForSet().size(key)).isEqualTo(30);
-				assertThat(bookmarkRepository.findAll().size()).isEqualTo(30);
-			});
 	}
 
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
@@ -142,7 +86,6 @@ public class BookmarkServiceTest {
 		Long userId = 1L;
 		Long vetFacilityId = 1L;
 		int threadCount = 30;
-		String key = RedisKey.VET_FACILITY_BOOKMARK_PREFIX + vetFacilityId;
 		ExecutorService executorService = Executors.newFixedThreadPool(10);
 		CountDownLatch latch = new CountDownLatch(threadCount);
 
@@ -163,18 +106,16 @@ public class BookmarkServiceTest {
 		Awaitility.await()
 			.atMost(Duration.ofSeconds(1))
 			.untilAsserted(() -> {
-				assertThat(stringRedisTemplate.opsForSet().size(key)).isEqualTo(1);
 				assertThat(bookmarkRepository.findAll().size()).isEqualTo(1);
 			});
 	}
 
-	@DisplayName("즐겨찾기 삭제 시 Redis에서는 사용자 ID가, RDB에서는 엔티티가 제거된다.")
+	@DisplayName("즐겨찾기 삭제 시 데이터가 삭제된다.")
 	@Test
 	void deleteBookmark() {
 		// given
 		Long userId = 1L;
 		Long vetFacilityId = 1L;
-		String key = RedisKey.VET_FACILITY_BOOKMARK_PREFIX + vetFacilityId;
 		CreateBookmarkRequest createRequest = new CreateBookmarkRequest(userId);
 		bookmarkService.createBookmark(vetFacilityId, createRequest);
 
@@ -183,7 +124,6 @@ public class BookmarkServiceTest {
 		bookmarkService.deleteBookmark(vetFacilityId, deleteRequest);
 
 		// then
-		assertThat(stringRedisTemplate.opsForSet().size(key)).isEqualTo(0);
 		assertThat(bookmarkRepository.findAll().size()).isEqualTo(0);
 	}
 

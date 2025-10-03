@@ -1,7 +1,6 @@
 package yong.petdoc.controller.user;
 
 import java.net.URI;
-import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +15,8 @@ import lombok.RequiredArgsConstructor;
 import yong.petdoc.dto.request.bookmark.GetMyBookmarksRequest;
 import yong.petdoc.dto.request.review.GetMyReviewsRequest;
 import yong.petdoc.dto.request.user.CreateUserRequest;
-import yong.petdoc.dto.request.vetfacility.GetRecentVetFacilitiesRequest;
 import yong.petdoc.dto.response.bookmark.MyBookmarksResponse;
 import yong.petdoc.dto.response.review.MyReviewsResponse;
-import yong.petdoc.dto.response.vetfacility.RecentVetFacilityDto;
 import yong.petdoc.service.bookmark.BookmarkService;
 import yong.petdoc.service.review.ReviewService;
 import yong.petdoc.service.user.UserService;
@@ -66,13 +63,5 @@ public class UserController {
 	) {
 		return ResponseEntity
 			.ok(bookmarkService.getMyBookmarks(request, pageable));
-	}
-
-	@GetMapping("/me/recent-facilities")
-	public ResponseEntity<List<RecentVetFacilityDto>> getRecentVetFacilities(
-		@RequestBody GetRecentVetFacilitiesRequest request
-	) {
-		return ResponseEntity
-			.ok(vetFacilityService.getRecentVetFacilities(request));
 	}
 }
