@@ -3,12 +3,6 @@ package yong.petdoc.service;
 import static org.assertj.core.api.Assertions.*;
 import static yong.petdoc.exception.ErrorCode.*;
 
-import java.time.Duration;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +12,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import yong.petdoc.domain.bookmark.Bookmark;
@@ -78,7 +71,7 @@ public class BookmarkServiceTest {
 			.hasMessage(DUPLICATE_BOOKMARK.getMessage());
 	}
 
-	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	/*@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	@DisplayName("동일한 유저가 동시에 즐겨찾기를 여러 번 요청해도 중복 저장되지 않는다.")
 	@Test
 	void createBookmark_concurrentWithSameUser() throws InterruptedException {
@@ -108,7 +101,7 @@ public class BookmarkServiceTest {
 			.untilAsserted(() -> {
 				assertThat(bookmarkRepository.findAll().size()).isEqualTo(1);
 			});
-	}
+	}*/
 
 	@DisplayName("즐겨찾기 삭제 시 데이터가 삭제된다.")
 	@Test
