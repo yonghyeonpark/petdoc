@@ -18,19 +18,19 @@ public class PostAsyncService {
 
 	@Async
 	@Transactional
-	public void increaseViews(Long postId) {
+	public void increaseViewCount(Long postId) {
 		Post post = postRepository.findById(postId)
 			.orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
-		post.incrementViews();
+		post.increaseViewCount();
 	}
 
 	@Async
 	@Transactional
-	public void increaseLikes(Long postId) {
+	public void increaseLikeCount(Long postId) {
 		Post post = postRepository.findById(postId)
 			.orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
-		post.incrementLikes();
+		post.increaseLikeCount();
 	}
 }

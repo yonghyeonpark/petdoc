@@ -23,8 +23,8 @@ public record PostListResponse(
 			post.getId(),
 			post.getTitle(),
 			post.getCreatedAt(),
-			post.getViews(),
-			post.getLikes()
+			post.getViewCount(),
+			post.getLikeCount()
 		);
 	}
 }

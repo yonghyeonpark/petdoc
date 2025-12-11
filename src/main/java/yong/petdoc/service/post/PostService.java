@@ -43,7 +43,7 @@ public class PostService {
 		Post post = postRepository.findById(postId)
 			.orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
-		postAsyncService.increaseViews(postId);
+		postAsyncService.increaseViewCount(postId);
 
 		return PostDetailResponse.from(post);
 	}
@@ -73,6 +73,6 @@ public class PostService {
 		PostLike postLike = new PostLike(post, user);
 		postLikeRepository.save(postLike);
 
-		postAsyncService.increaseLikes(postId);
+		postAsyncService.increaseLikeCount(postId);
 	}
 }

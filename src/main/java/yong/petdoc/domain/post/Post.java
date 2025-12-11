@@ -23,8 +23,8 @@ public class Post extends BaseTimeEntity {
 
 	private String title;
 	private String content;
-	private Integer views;
-	private Integer likes;
+	private Integer viewCount;
+	private Integer likeCount;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private User user;
@@ -37,15 +37,15 @@ public class Post extends BaseTimeEntity {
 		this.title = title;
 		this.content = content;
 		this.user = user;
-		this.views = 0;
-		this.likes = 0;
+		this.viewCount = 0;
+		this.likeCount = 0;
 	}
 
-	public void incrementViews() {
-		views++;
+	public void increaseViewCount() {
+		viewCount++;
 	}
 
-	public void incrementLikes() {
-		likes++;
+	public void increaseLikeCount() {
+		likeCount++;
 	}
 }

@@ -25,8 +25,8 @@ public record PostDetailResponse(
 			post.getTitle(),
 			post.getContent(),
 			post.getCreatedAt(),
-			post.getViews(),
-			post.getLikes()
+			post.getViewCount(),
+			post.getLikeCount()
 		);
 	}
 }
