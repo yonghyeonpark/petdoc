@@ -30,6 +30,9 @@ VALUES ('user1@test.com', 'password1', 'user1', NULL, false),
        ('user29@test.com', 'password29', 'user29', NULL, false),
        ('user30@test.com', 'password30', 'user30', NULL, false);
 
+INSERT INTO post (title, content, views, likes, user_id)
+VALUES ('테스트 제목', '테스트 내용', 0, 0, 1);
+
 INSERT INTO vet_facility (vet_facility_type, province, name, location, lot_address, road_address,
                           phone_number, place_url, bookmark_count, is_deleted)
 VALUES ('HOSPITAL', 'SEOUL', '서울동물병원', null, '서울 중구 남대문로 1', '서울 중구 세종대로 110',
