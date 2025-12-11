@@ -25,8 +25,7 @@ public class TaskExecutorConfig {
 	public TaskExecutor asyncTaskExecutor() {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 		executor.setCorePoolSize(10);
-		executor.setMaxPoolSize(20);
-		executor.setQueueCapacity(0);
+		executor.setMaxPoolSize(10);
 		executor.setThreadNamePrefix("asyncExecutor-");
 		executor.initialize();
 		return executor;
