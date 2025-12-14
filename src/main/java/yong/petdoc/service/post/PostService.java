@@ -1,5 +1,6 @@
 package yong.petdoc.service.post;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import yong.petdoc.exception.ErrorCode;
 import yong.petdoc.repository.post.PostRepository;
 import yong.petdoc.repository.postlike.PostLikeRepository;
 import yong.petdoc.repository.user.UserRepository;
+import yong.petdoc.service.post.dto.PostLikeEvent;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -29,6 +31,7 @@ public class PostService {
 	private final UserRepository userRepository;
 	private final PostLikeRepository postLikeRepository;
 
+	private final ApplicationEventPublisher applicationEventPublisher;
 	private final PostAsyncService postAsyncService;
 
 	@Transactional
@@ -73,6 +76,6 @@ public class PostService {
 		PostLike postLike = new PostLike(post, user);
 		postLikeRepository.save(postLike);
 
-		postAsyncService.increaseLikeCount(postId);
+		applicationEventPublisher.publishEvent(new PostLikeEvent(postId));
 	}
 }
